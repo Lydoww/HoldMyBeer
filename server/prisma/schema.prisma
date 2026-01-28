@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+  username String
+  points   Int    @default(0)
+  bets     Bet[]
+  votes    Vote[]
+}
+
+model Bet {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  status      String  @default("open")
+  creator     User    @relation(fields: [creatorId], references: [id])
+  creatorId   Int
+  votes       Vote[]
+  createdAt   DateTime   @default(now())
+  
+}
+
+model Vote {
+  id     Int    @id @default(autoincrement())
+  choice Choice
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+  bet    Bet    @relation(fields: [betId], references: [id])
+  betId  Int
+  @@unique([userId, betId]) 
+}
+
+enum Choice {
+  success
+  fail
+}
