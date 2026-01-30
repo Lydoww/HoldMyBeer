@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
 
 const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.headers)
     const header = req.headers["authorization"]
     if (!header) {
         return res.status(401).json('header invalid')
