@@ -1,20 +1,36 @@
 name: HoldMyBeer
 
-on: 
+on:
   push:
     branches:
       - main
 
-jobs: 
-  test: 
+jobs:
+  test:
     runs-on: ubuntu-latest
     defaults:
-      run: 
+      run:
         working-directory: server
-    steps: 
+    env: 
+       DATABASE_URL: postgresql://postgres:betsie@localhost:5432/holdMyBeer?schema=public
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: betsie
+          POSTGRES_DB: holdMyBeer
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
-        with: 
+        with:
           node-version: 22
       - run: npm ci
       - run: npx prisma generate
