@@ -13,6 +13,7 @@ jobs:
         working-directory: server
     env:
       DATABASE_URL: postgresql://postgres:betsie@localhost:5432/holdMyBeer?schema=public
+      SECRET_KEY: une_cle_secrete_pour_ci
     services:
       postgres:
         image: postgres
