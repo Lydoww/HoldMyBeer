@@ -72,6 +72,6 @@ export const deleteBet = async (req: Request, res: Response) => {
     }
 
     await prisma.bet.delete({ where: { id } })
-    res.json('Pari supprimé avec succès')
+    res.status(204).json({ message: 'Pari supprimé avec succès' })
 }
 

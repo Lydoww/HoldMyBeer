@@ -64,5 +64,5 @@ export const deleteVote = async (req: Request, res: Response) => {
     }
 
     await prisma.vote.delete({ where: { id } })
-    return res.status(200).json('Vote supprimé avec succès')
+    res.status(204).json({ message: 'Vote supprimé avec succès' })
 }
