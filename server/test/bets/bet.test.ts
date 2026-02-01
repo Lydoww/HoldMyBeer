@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { authTestUser, cleanerFunction } from '../helpers';
+import { authTestUser, cleanerFunction, createBet } from '../helpers';
 
 describe('Test des routes /bets', () => {
     let token1 = ''
@@ -11,15 +11,32 @@ describe('Test des routes /bets', () => {
         await cleanerFunction()
         token1 = await authTestUser('betTest@alex.com', 'alex', 'password')
         token2 = await authTestUser('betTest2@alex.com', 'hugo', '123456')
+        betId = await createBet(token1)
     })
     describe('GET /bets', () => {
         it('On essaye de récupérer tous les paris', async () => {
-            await supertest(app).get('/api/bets').set('Authorization', 'Bearer ' + token1).expect(200)
+            const response = await supertest(app).get('/api/bets').set('Authorization', 'Bearer ' + token1).expect(200)
+            expect(response.body.data).toBeInstanceOf(Array)
+            expect(response.body.page).toBe(1)
+            expect(response.body.pageSize).toBe(10)
+            expect(response.body.total).toBeGreaterThan(0)
+            expect(response.body.totalPages).toBeGreaterThan(0)
+        })
+        it('On essaye de récupérer tous les paris avec des paramètres de pagination', async () => {
+            const response = await supertest(app).get('/api/bets').set('Authorization', 'Bearer ' + token1).query({
+                page: 2,
+                pageSize: 5
+            }).expect(200)
+            expect(response.body.data).toBeInstanceOf(Array)
+            expect(response.body.page).toBe(2)
+            expect(response.body.pageSize).toBe(5)
+            expect(response.body.total).toBeGreaterThan(0)
+            expect(response.body.totalPages).toBeGreaterThan(0)
         })
     })
     describe('POST /bets', () => {
         it('On esssaye de créer un pari', async () => {
-            
+
             const response = await supertest(app).post('/api/bets').set('Authorization', 'Bearer ' + token1).send({
                 title: 'Nouveau pari',
                 description: 'Je vais lift 120kg en DL ce samedi'

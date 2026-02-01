@@ -3,8 +3,43 @@ import prisma from "../lib/db.js"
 import { ForbiddenError, NotFoundError } from "../errors/AppError.js"
 
 export const getBets = async (req: Request, res: Response) => {
-    const data = await prisma.bet.findMany()
-    res.json(data)
+    const page = Number(req.query.page) || 1
+    const pageSize = Number(req.query.pageSize) || 10
+    const skip = (page - 1) * pageSize
+    const take = pageSize
+
+
+    const promise1 = prisma.bet.findMany({
+        skip,
+        take,
+        orderBy: {
+            createdAt: 'desc'
+        },
+        include: {
+            creator: {
+                select: {
+                    username: true
+                }
+            },
+            _count: {
+                select: {
+                    votes: true
+                }
+            }
+        }
+    })
+
+    const promise2 = prisma.bet.count()
+
+    const [data, totalBets] = await Promise.all([promise1, promise2])
+
+    res.json({
+        data,
+        page,
+        pageSize,
+        total: totalBets,
+        totalPages: Math.ceil(totalBets / pageSize)
+    })
 }
 
 export const createBet = async (req: Request, res: Response) => {

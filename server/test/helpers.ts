@@ -16,6 +16,13 @@ export const authTestUser = async (email: string, username: string, password: st
     return newRequest.body.token
 }
 
+export const createBet = async (token: string) => {
+    const response = await supertest(app).post('/api/bets').set('Authorization', 'Bearer ' + token).send({
+        title: 'Pari pour les votes',
+        description: 'un pari pour les votes'
+    }).expect(201)
+    return response.body.id
+}
 
 export const cleanerFunction = async () => {
     await prisma.vote.deleteMany()
