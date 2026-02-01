@@ -13,7 +13,7 @@ export const authTestUser = async (email: string, username: string, password: st
         email: email,
         password: password
     })
-    return newRequest.body // token
+    return newRequest.body.token
 }
 
 

@@ -1,5 +1,4 @@
 import { Request, Response } from "express"
-import { Prisma } from '@prisma/client'
 import prisma from "../lib/db.js"
 import { ForbiddenError, NotFoundError } from "../errors/AppError.js"
 
@@ -36,7 +35,7 @@ export const updateVote = async (req: Request, res: Response) => {
         throw new NotFoundError('Ce vote n\'existe pas')
     }
     if (user !== vote.userId) {
-        throw new ForbiddenError('vous ne pouvez pas modifier le vote de quelqu\'un d\'autre')
+        throw new ForbiddenError('Vous ne pouvez pas modifier le vote de quelqu\'un d\'autre')
     }
     const updateVote = await prisma.vote.update({
         where: { id },
@@ -56,13 +55,13 @@ export const deleteVote = async (req: Request, res: Response) => {
     })
 
     if (!vote) {
-        throw new NotFoundError('ce vote n\'existe pas')
+        throw new NotFoundError('Ce vote n\'existe pas')
     }
 
     if (user !== vote.userId) {
-        throw new ForbiddenError('vous ne pouvez pas delete un vote qui ne vous appartient pas')
+        throw new ForbiddenError('Vous ne pouvez pas supprimer un vote qui ne vous appartient pas')
     }
 
     await prisma.vote.delete({ where: { id } })
-    res.status(204).json({ message: 'Vote supprimé avec succès' })
+    res.status(200).json({ message: 'Vote supprimé avec succès' })
 }

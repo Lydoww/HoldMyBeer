@@ -47,8 +47,8 @@ describe('Test des routes /auth', () => {
                 email: 'authTest@test.com',
                 password: 'password123456789'
             }).expect(200)
-            expect(response.body).toBeDefined() // vérifie que le body n'est pas vide/undefined
-            expect(typeof response.body).toBe('string')
+            expect(response.body.token).toBeDefined() // vérifie que le body n'est pas vide/undefined
+            expect(typeof response.body.token).toBe('string')
         })
         it('On essayer de connecter un utilisateur avec les mauvaises données', async () => {
             await supertest(app).post('/api/auth/login').send({

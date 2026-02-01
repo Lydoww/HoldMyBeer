@@ -43,7 +43,7 @@ export const updateBet = async (req: Request, res: Response) => {
         throw new NotFoundError('Ce pari n\'existe pas')
     }
     if (user !== bet.creatorId) {
-        throw new ForbiddenError('Vous ne pouvez pas modifier un pari que vous n\'avez pas créer')
+        throw new ForbiddenError('Vous ne pouvez pas modifier un pari que vous n\'avez pas crée')
     }
     const updatedBet = await prisma.bet.update({
         where: {
@@ -68,10 +68,10 @@ export const deleteBet = async (req: Request, res: Response) => {
         throw new NotFoundError('Ce pari n\'existe pas')
     }
     if (user !== bet.creatorId) {
-        throw new ForbiddenError('Vous ne pouvez pas supprimmer un pari que vous n\'avez pas créer')
+        throw new ForbiddenError('Vous ne pouvez pas supprimmer un pari que vous n\'avez pas crée')
     }
 
     await prisma.bet.delete({ where: { id } })
-    res.status(204).json({ message: 'Pari supprimé avec succès' })
+    res.status(200).json({ message: 'Pari supprimé avec succès' })
 }
 

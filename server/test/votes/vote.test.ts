@@ -47,7 +47,7 @@ describe('Test des routes /votes', () => {
         it('Vote avec 2 fois sur meme pari', async () => {
             await supertest(app).post('/api/bets/' + betId + '/votes').set('Authorization', 'Bearer ' + token1).send({
                 choice: 'success'
-            }).expect(400)
+            }).expect(409)
         })
     })
     describe('PATCH /votes', () => {
