@@ -9,27 +9,18 @@ export const getVotes = async (req: Request, res: Response) => {
 }
 
 export const createVote = async (req: Request, res: Response) => {
-
     const { choice } = req.body
     const betId = Number(req.params.id)
     const userId = req.user.userId
-    try {
-        const newVote = await prisma.vote.create({
-            data: {
-                choice,
-                userId,
-                betId
-            }
-        })
-        res.status(201).json(newVote)
-    } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-            return res.status(400).json('Tu as déjà voté sur ce pari')
-        } else {
-            console.error(error)
-            return res.status(500).json('Erreur serveur')
+
+    const newVote = await prisma.vote.create({
+        data: {
+            choice,
+            userId,
+            betId
         }
-    }
+    })
+    res.status(201).json(newVote)
 }
 
 export const updateVote = async (req: Request, res: Response) => {

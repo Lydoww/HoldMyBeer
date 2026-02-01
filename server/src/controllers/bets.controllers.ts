@@ -25,7 +25,7 @@ export const getOneBet = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const bet = await prisma.bet.findUnique({ where: { id } })
     if (bet == null) {
-        return res.status(404).json('Pari inexistant')
+        throw new NotFoundError('Le pari n\'existe pas')
     }
     res.json(bet)
 }
