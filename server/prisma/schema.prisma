@@ -20,13 +20,12 @@ model Bet {
   id          Int     @id @default(autoincrement())
   title       String
   description String?
-  status      String  @default("open")
+  status      BetStatus  @default(open)
   creator     User    @relation(fields: [creatorId], references: [id])
   creatorId   Int
   votes       Vote[]
   createdAt   DateTime   @default(now())
-  
-}
+} 
 
 model Vote {
   id     Int    @id @default(autoincrement())
@@ -41,4 +40,10 @@ model Vote {
 enum Choice {
   success
   fail
+}
+
+enum BetStatus {
+  open
+  success
+  failed
 }
