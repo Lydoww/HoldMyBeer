@@ -147,7 +147,7 @@ export const deleteBet = async (req: Request, res: Response) => {
         throw new NotFoundError('Ce pari n\'existe pas')
     }
     if (user !== bet.creatorId) {
-        throw new ForbiddenError('Vous ne pouvez pas supprimmer un pari que vous n\'avez pas crée')
+        throw new ForbiddenError('Vous ne pouvez pas supprimer un pari que vous n\'avez pas crée')
     }
 
     await prisma.bet.delete({ where: { id } })
