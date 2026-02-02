@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 import app from '../../src/app';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, it } from 'vitest'
 import { authTestUser, cleanerFunction } from '../helpers';
 
 describe('Test des routes /votes', () => {

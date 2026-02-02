@@ -5,6 +5,8 @@ const createBetSchema = z.object({
     description: z.string().optional(),
 })
 
-const updateBetSchema = createBetSchema.partial()
+const updateBetSchema = createBetSchema.partial().extend({
+    status: z.enum(['success', 'failed']).optional()
+})
 
 export { createBetSchema, updateBetSchema }

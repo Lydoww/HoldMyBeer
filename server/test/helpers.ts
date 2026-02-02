@@ -24,6 +24,14 @@ export const createBet = async (token: string) => {
     return response.body.id
 }
 
+export const createVote = async (betId: number, token: string, choice: string) => {
+    const response = await supertest(app).post('/api/bets/' + betId + '/votes').set('Authorization', 'Bearer ' + token).send({
+        choice
+    }).expect(201)
+    return response.body
+}
+
+
 export const cleanerFunction = async () => {
     await prisma.vote.deleteMany()
     await prisma.bet.deleteMany()

@@ -1,16 +1,19 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { authTestUser, cleanerFunction, createBet } from '../helpers';
+import { authTestUser, cleanerFunction, createBet, createVote } from '../helpers';
+import prisma from '../../src/lib/db';
 
 describe('Test des routes /bets', () => {
     let token1 = ''
     let token2 = ''
+    let token3 = ''
     let betId = 0
     beforeAll(async () => {
         await cleanerFunction()
         token1 = await authTestUser('betTest@alex.com', 'alex', 'password')
         token2 = await authTestUser('betTest2@alex.com', 'hugo', '123456')
+        token3 = await authTestUser('creatorTest@alex.com', 'creator', 'password78')
         betId = await createBet(token1)
     })
     describe('GET /bets', () => {
@@ -93,8 +96,30 @@ describe('Test des routes /bets', () => {
             }).expect(404)
         })
     })
+
+    describe('PATCH /bets/:id/votes', () => {
+        let pointsBetId = 0
+        beforeAll(async () => {
+            pointsBetId = await createBet(token1)
+            await createVote(pointsBetId, token2, "success")
+            await createVote(pointsBetId, token3, "fail")
+        })
+        it('attribue les points correctement à la clôture', async () => {
+            await supertest(app).patch('/api/bets/' + pointsBetId).set("Authorization", 'Bearer ' + token1).send({
+                status: 'success'
+            }).expect(200)
+            const user = await prisma.user.findUnique({ where: { email: 'betTest@alex.com' } })
+            expect(user?.points).toBe(5)
+            const user2 = await prisma.user.findUnique({ where: { email: 'betTest2@alex.com' } })
+            expect(user2?.points).toBe(10)
+            const creatorPoints = await prisma.user.findUnique({ where: { email: 'creatorTest@alex.com' } })
+            expect(creatorPoints?.points).toBe(0)
+            const bet = await prisma.bet.findUnique({ where: { id: pointsBetId } })
+            expect(bet?.status).toBe('success')
+        })
+    })
+
     describe('DELETE /bets/:id', () => {
-        console.log('TENTATIVE DELETE AVEC betId:', betId)
         it('On veut supprimer un pari qui n\'est pas le notre', async () => {
             await supertest(app).delete('/api/bets/' + betId).set('Authorization', 'Bearer ' + token2).expect(403)
         })
@@ -106,17 +131,9 @@ describe('Test des routes /bets', () => {
         })
     })
 
-
     afterAll(async () => {
         await cleanerFunction()
     })
 })
 
 
-
-
-describe('GET /api/bets', () => {
-    it('Essaye de recevoir tous les bets, sinon retourne 401 si pas de token', async function () {
-        await supertest(app).get('/api/bets').expect(401)
-    })
-})
