@@ -1,21 +1,22 @@
 import jwt from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
+import { UnauthorizedError } from '../errors/AppError.js'
 
 const authenticateToken = async (req: Request, res: Response, next: NextFunction) => {
     const header = req.headers["authorization"]
     if (!header) {
-        return res.status(401).json('header invalid')
+        throw new UnauthorizedError('Missing authorization header')
     }
     const token = header && header.split(' ')[1]
     if (!token) {
-        return res.status(401).json('token introuvable')
+        throw new UnauthorizedError('Token not found')
     }
     try {
         const verifyToken = jwt.verify(token, process.env.SECRET_KEY as string) as { userId: number; email: string }
         req.user = verifyToken
         next()
     } catch (error) {
-        return res.status(401).json('crédit invalide')
+        throw new UnauthorizedError('Invalid token')
     }
 
 }

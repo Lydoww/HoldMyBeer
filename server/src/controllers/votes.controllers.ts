@@ -32,10 +32,10 @@ export const updateVote = async (req: Request, res: Response) => {
         where: { id }
     })
     if (!vote) {
-        throw new NotFoundError('Ce vote n\'existe pas')
+        throw new NotFoundError('Vote not found')
     }
     if (user !== vote.userId) {
-        throw new ForbiddenError('Vous ne pouvez pas modifier le vote de quelqu\'un d\'autre')
+        throw new ForbiddenError('You cannot update someone else\'s vote')
     }
     const updateVote = await prisma.vote.update({
         where: { id },
@@ -55,13 +55,13 @@ export const deleteVote = async (req: Request, res: Response) => {
     })
 
     if (!vote) {
-        throw new NotFoundError('Ce vote n\'existe pas')
+        throw new NotFoundError('Vote not found')
     }
 
     if (user !== vote.userId) {
-        throw new ForbiddenError('Vous ne pouvez pas supprimer un vote qui ne vous appartient pas')
+        throw new ForbiddenError('You cannot delete a vote you do not own')
     }
 
     await prisma.vote.delete({ where: { id } })
-    res.status(200).json({ message: 'Vote supprimé avec succès' })
+    res.status(200).json({ message: 'Vote deleted successfully' })
 }
