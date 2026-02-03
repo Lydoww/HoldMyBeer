@@ -34,7 +34,7 @@ export class NotFoundError extends AppError {
 
 export class ValidationError extends AppError {
     constructor(message: string = "Validation failed") {
-        super(message, 422)
+        super(message, 400)
     }
 }
 
