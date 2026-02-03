@@ -59,7 +59,7 @@ export const getOneBet = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const bet = await prisma.bet.findUnique({ where: { id } })
     if (bet == null) {
-        throw new NotFoundError('Le pari n\'existe pas')
+        throw new NotFoundError('Bet not found')
     }
     res.json(bet)
 }
@@ -74,14 +74,14 @@ export const updateBet = async (req: Request, res: Response) => {
         where: { id }
     })
     if (!bet) {
-        throw new NotFoundError('Ce pari n\'existe pas')
+        throw new NotFoundError('Bet not found')
     }
     if (user !== bet.creatorId) {
-        throw new ForbiddenError('Vous ne pouvez pas modifier un pari que vous n\'avez pas crée')
+        throw new ForbiddenError('You cannot update a bet you did not create')
     }
 
     if (bet.status !== 'open' && status) {
-        throw new BadRequestError('Ce pari est déjà clôturé')
+        throw new BadRequestError('This bet is already closed')
     }
 
     if (bet.status === 'open' && (status === 'success' || status === 'failed')) {
@@ -144,13 +144,13 @@ export const deleteBet = async (req: Request, res: Response) => {
     })
 
     if (!bet) {
-        throw new NotFoundError('Ce pari n\'existe pas')
+        throw new NotFoundError('Bet not found')
     }
     if (user !== bet.creatorId) {
-        throw new ForbiddenError('Vous ne pouvez pas supprimer un pari que vous n\'avez pas crée')
+        throw new ForbiddenError('You cannot delete a bet you did not create')
     }
 
     await prisma.bet.delete({ where: { id } })
-    res.status(200).json({ message: 'Pari supprimé avec succès' })
+    res.status(200).json({ message: 'Bet deleted successfully' })
 }
 

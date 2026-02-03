@@ -11,7 +11,7 @@ export const register = async (req: Request, res: Response) => {
         where: { email }
     })
     if (emailAlreadyUsed) {
-        throw new BadRequestError('Email déjà utilisé')
+        throw new BadRequestError('Email already in use')
     }
     const hash = await bcrypt.hash(password, 10)
     const newUser = await prisma.user.create({
@@ -34,11 +34,11 @@ export const login = async (req: Request, res: Response) => {
         where: { email }
     })
     if (!user) {
-        throw new UnauthorizedError('Email ou mot de passe incorrect')
+        throw new UnauthorizedError('Invalid email or password')
     }
     const comparedPwd = await bcrypt.compare(password, user.password)
     if (!comparedPwd) {
-        throw new UnauthorizedError('Email ou mot de passe incorrect')
+        throw new UnauthorizedError('Invalid email or password')
     }
     const token = jwt.sign({ userId: user.id, email: user.email }, process.env.SECRET_KEY as string, { expiresIn: '1h' })
     return res.status(200).json({ token })
