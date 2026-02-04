@@ -1,14 +1,15 @@
+import { useAuth } from '@/stores/authStore'
 import axios from 'axios'
 
 const apiClient = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: 'http://localhost:8000/api',
     headers: {
         'Content-Type': 'application/json'
     }
 })
 
 apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem('accessToken')
+    const token = useAuth.getState().token
     if (token) {
         config.headers = config.headers ?? {}
         config.headers['Authorization'] = `Bearer ${token}`
