@@ -6,12 +6,17 @@ import { useAuth } from '@/stores/authStore';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import Logo from '@/assets/logofinal.png';
+import axios from 'axios';
+import { cn } from '@/lib/utils';
 
 const Login = () => {
   const [user, setUser] = useState({
     email: '',
     password: '',
   });
+
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const setAuth = useAuth((state) => state.setAuth);
@@ -23,13 +28,20 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await loginUser(user.email, user.password);
       const { token, user: userData } = response;
       setAuth(token, userData);
       navigate('/');
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -38,11 +50,7 @@ const Login = () => {
       <div className='w-full max-w-md'>
         {/* Logo */}
         <div className='flex justify-center mb-2 '>
-          <img
-            src={Logo}
-            alt='HoldMyBeer Logo'
-            className='w-32 h-32  '
-          />
+          <img src={Logo} alt='HoldMyBeer Logo' className='w-32 h-32  ' />
         </div>
 
         {/* Card */}
@@ -74,7 +82,10 @@ const Login = () => {
                 placeholder='you@email.com'
                 value={user.email}
                 onChange={handleChange}
-                className='h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20'
+                className={cn(
+                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2'
+                )}
               />
             </div>
 
@@ -100,14 +111,22 @@ const Login = () => {
                 placeholder='••••••••'
                 value={user.password}
                 onChange={handleChange}
-                className='h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20'
+                className={cn(
+                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2'
+                )}
               />
             </div>
           </div>
 
+          {error && (
+            <p className='text-red-500 font-semibold text-center'>{error}</p>
+          )}
+
           <Button
+            disabled={isLoading}
             type='submit'
-            className='w-full h-10 sm:h-11 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
+            className='w-full h-10 sm:h-11 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
           >
             Sign In
           </Button>

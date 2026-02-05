@@ -6,6 +6,8 @@ import { useAuth } from '@/stores/authStore';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import Logo from '@/assets/logofinal.png';
+import { cn } from '@/lib/utils';
+import axios from 'axios';
 
 const Register = () => {
   const [user, setUser] = useState({
@@ -13,6 +15,9 @@ const Register = () => {
     username: '',
     password: '',
   });
+
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const setAuth = useAuth((state) => state.setAuth);
@@ -24,6 +29,8 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await registerUser(
         user.email,
@@ -32,14 +39,19 @@ const Register = () => {
       );
       const { token, user: userData } = response;
       setAuth(token, userData);
-      navigate('/home');
-    } catch (error) {
-      console.error(error);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800'>
+    <div className='min-h-screen flex items-center justify-center px-4 sm:px-6 bg-linear-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800'>
       <div className='w-full max-w-md'>
         {/* Logo */}
         <div className='flex justify-center mb-4'>
@@ -75,7 +87,10 @@ const Register = () => {
                 placeholder='you@email.com'
                 value={user.email}
                 onChange={handleChange}
-                className='h-10 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20'
+                className={cn(
+                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2'
+                )}
               />
             </div>
 
@@ -93,7 +108,10 @@ const Register = () => {
                 placeholder='alexis_dev'
                 value={user.username}
                 onChange={handleChange}
-                className='h-10 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20'
+                className={cn(
+                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2'
+                )}
               />
               <p className='text-xs text-gray-500 dark:text-gray-400'>
                 This is how others will see you
@@ -114,14 +132,22 @@ const Register = () => {
                 placeholder='••••••••'
                 value={user.password}
                 onChange={handleChange}
-                className='h-10 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20'
+                className={cn(
+                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2'
+                )}
               />
             </div>
           </div>
 
+          {error && (
+            <p className='text-red-500 font-semibold text-center'>{error}</p>
+          )}
+
           <Button
+            disabled={isLoading}
             type='submit'
-            className='w-full h-10 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
+            className='w-full h-10 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
           >
             Create Account
           </Button>
