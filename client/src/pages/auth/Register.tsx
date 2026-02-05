@@ -8,6 +8,7 @@ import { useNavigate, Link } from 'react-router';
 import Logo from '@/assets/logofinal.png';
 import { cn } from '@/lib/utils';
 import axios from 'axios';
+import { Spinner } from '@/components/ui/spinner';
 
 const Register = () => {
   const [user, setUser] = useState({
@@ -149,7 +150,7 @@ const Register = () => {
             type='submit'
             className='w-full h-10 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
           >
-            Create Account
+            {isLoading ? <Spinner /> : 'Create an account'}
           </Button>
 
           <div className='text-center pt-2 sm:pt-3 border-t border-gray-100 dark:border-gray-700'>

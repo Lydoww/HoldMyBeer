@@ -8,6 +8,7 @@ import { useNavigate, Link } from 'react-router';
 import Logo from '@/assets/logofinal.png';
 import axios from 'axios';
 import { cn } from '@/lib/utils';
+import { Spinner } from '@/components/ui/spinner';
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -128,7 +129,7 @@ const Login = () => {
             type='submit'
             className='w-full h-10 sm:h-11 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
           >
-            Sign In
+            {isLoading ? <Spinner /> : 'Sign In'}
           </Button>
 
           <div className='text-center pt-3 sm:pt-4 border-t border-gray-100 dark:border-gray-700'>

@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import PrivateRoutes from './components/routes/PrivateRoutes';
-import Layout from './components/ui/Layout';
+import Layout from './components/layout/Layout';
 
 const queryClient = new QueryClient();
 
