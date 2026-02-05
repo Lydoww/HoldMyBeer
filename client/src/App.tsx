@@ -5,6 +5,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import PrivateRoutes from './components/routes/PrivateRoutes';
 import Layout from './components/layout/Layout';
+import Bets from './pages/bets/Bets';
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const App = () => {
           <Route element={<Layout />}>
             <Route element={<PrivateRoutes />}>
               <Route element={<Homepage />} path='/' />
+              <Route element={<Bets />} path='/bets' />
             </Route>
           </Route>
           <Route element={<Login />} path='/login' />
