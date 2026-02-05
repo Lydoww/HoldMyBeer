@@ -1,20 +1,13 @@
-import type { BetStatus } from "@/types";
+import type { CreateBetPayload, PaginatedBetsResponse, UpdateBetPayload } from "@/types";
 import apiClient from "./interceptors";
 
-interface UpdateBetPayload {
-    title?: string,
-    description?: string,
-    status?: BetStatus
-}
-
-
-export const getBets = async (page: number, pageSize: number) => {
+export const getBets = async (page: number, pageSize: number): Promise<PaginatedBetsResponse> => {
     const response = await apiClient.get('/bets', { params: { page, pageSize } })
     return response.data
 }
 
-export const createBet = async (title: string, description: string) => {
-    const response = await apiClient.post('/bets', { title, description })
+export const createBet = async (data: CreateBetPayload) => {
+    const response = await apiClient.post('/bets', data)
     return response.data
 }
 
