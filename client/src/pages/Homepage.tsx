@@ -1,17 +1,8 @@
-import { useEffect } from 'react';
+import { useAuth } from '@/stores/authStore';
 
 const Homepage = () => {
-  useEffect(() => {
-    const fetchTest = async () => {
-      const res = await fetch('http://localhost:3000/');
-      const result = await res.json();
-      console.log(result);
-      return result;
-    };
-    fetchTest();
-  }, []);
-
-  return <div>homagePage</div>;
+  const setAuth = useAuth((state) => state.user);
+  return <div>Welcome {setAuth?.username}</div>;
 };
 
 export default Homepage;

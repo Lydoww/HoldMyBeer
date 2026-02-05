@@ -15,9 +15,9 @@ describe('Test des routes /auth', () => {
                 username: 'alexisss',
                 password: 'password123456789'
             }).expect(201)
-            expect(response.body).toHaveProperty('id')
-            expect(response.body).not.toHaveProperty('password')
-            expect(response.body.email).toBe('authTest@test.com')
+            expect(response.body.user).toHaveProperty('id')
+            expect(response.body.user).not.toHaveProperty('password')
+            expect(response.body.user.email).toBe('authTest@test.com')
         })
         it('On créer un utilisateur mais l\'email est déjà utilisé', async () => {
             await supertest(app).post('/api/auth/register').send({

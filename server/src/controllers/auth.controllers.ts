@@ -24,7 +24,8 @@ export const register = async (req: Request, res: Response) => {
             password: true
         }
     })
-    res.status(201).json(newUser)
+    const token = jwt.sign({ userId: newUser.id, email: newUser.email }, process.env.SECRET_KEY as string, { expiresIn: '1h' })
+    res.status(201).json({ token, user: newUser })
 }
 
 export const login = async (req: Request, res: Response) => {
@@ -41,5 +42,12 @@ export const login = async (req: Request, res: Response) => {
         throw new UnauthorizedError('Invalid email or password')
     }
     const token = jwt.sign({ userId: user.id, email: user.email }, process.env.SECRET_KEY as string, { expiresIn: '1h' })
-    return res.status(200).json({ token })
+    return res.status(200).json({
+        token, user: {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            points: user.points
+        }
+    })
 }
