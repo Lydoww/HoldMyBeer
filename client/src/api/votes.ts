@@ -1,8 +1,8 @@
 import type { CreateVotePayload, UpdateVotePayload, Vote } from "@/types"
 import apiClient from "./interceptors"
 
-export const getVotes = async (userId?: number): Promise<Vote[]> => {
-    const response = await apiClient.get('/votes', { params: { userId } })
+export const getVotes = async (userId?: number, creatorId?: number): Promise<Vote[]> => {
+    const response = await apiClient.get('/votes', { params: { userId, creatorId } })
     return response.data
 }
 

@@ -29,6 +29,7 @@ export interface Bet {
     creator: { username: string }
     _count: { votes: number }
     votes: Vote[]
+    createdAt: string
 }
 
 export interface PaginatedBetsResponse {
