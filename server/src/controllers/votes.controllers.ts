@@ -3,7 +3,11 @@ import prisma from "../lib/db.js"
 import { ForbiddenError, NotFoundError } from "../errors/AppError.js"
 
 export const getVotes = async (req: Request, res: Response) => {
-    const data = await prisma.vote.findMany()
+    const userId = req.query.userId
+
+    const where = userId ? { userId: Number(userId) } : {}
+
+    const data = await prisma.vote.findMany({ where, include: { bet: true } })
     res.json(data)
 }
 
