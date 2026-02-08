@@ -1,14 +1,23 @@
 export type BetStatus = 'open' | 'success' | 'failed'
+export type Choice = 'success' | 'fail'
 
 export interface CreateBetPayload {
     title: string,
     description: string
 }
 
+export interface CreateVotePayload {
+    choice: Choice,
+}
+
 export interface UpdateBetPayload {
     title?: string,
     description?: string,
     status?: BetStatus
+}
+
+export interface UpdateVotePayload {
+    choice?: Choice,
 }
 
 export interface Bet {
@@ -19,6 +28,7 @@ export interface Bet {
     creatorId: number
     creator: { username: string }
     _count: { votes: number }
+    votes: Vote[]
 }
 
 export interface PaginatedBetsResponse {
@@ -27,4 +37,12 @@ export interface PaginatedBetsResponse {
     pageSize: number,
     total: number,
     totalPages: number
+}
+
+export interface Vote {
+    id: number,
+    choice: Choice,
+    userId: number,
+    bet: Bet
+    betId: number
 }
