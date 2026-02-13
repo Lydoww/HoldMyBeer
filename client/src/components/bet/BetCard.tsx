@@ -14,6 +14,7 @@ import { ThumbsUp, ThumbsDown, Pencil, Trash2, X, Check } from 'lucide-react';
 
 import { useVoteMutations } from '@/hooks/votes/useVoteMutations';
 import { useBetMutations } from '@/hooks/bets/useBetMutations';
+import ModalDeleteBet from '../modals/ModalDeleteBet';
 
 interface BetProps {
   bet: Bet;
@@ -25,6 +26,7 @@ export const BetCard = ({ bet }: BetProps) => {
     title: '',
     description: '',
   });
+  const [isOpen, setIsOpen] = useState(false);
   const user = useAuth((state) => state.user);
   const userAlreadyVoted = bet.votes.find((vote) => vote.userId === user?.id);
   const isOwner = user?.id === bet.creatorId;
@@ -61,6 +63,8 @@ export const BetCard = ({ bet }: BetProps) => {
     updateMutation.mutate({ id: bet.id, data: editData });
     setIsEditing(false);
   };
+
+  const toggleModal = () => setIsOpen(!isOpen);
 
   return (
     <Card className='group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40'>
@@ -175,11 +179,12 @@ export const BetCard = ({ bet }: BetProps) => {
                   variant='outline'
                   size='sm'
                   className='flex-1 gap-1.5 rounded-lg border-border text-muted-foreground hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10 transition-all'
-                  onClick={() => deleteMutation.mutate(bet.id)}
+                  onClick={toggleModal}
                 >
                   <Trash2 size={14} />
                   Delete
                 </Button>
+                {isOpen && <ModalDeleteBet bet={bet} onClose={toggleModal} />}
                 <Button
                   size='sm'
                   className='flex-1 gap-1.5 rounded-lg font-semibold text-black bg-[#fde639] hover:brightness-90 transition-all'

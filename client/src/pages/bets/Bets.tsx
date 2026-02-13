@@ -4,7 +4,7 @@ import { useState } from 'react';
 import ProtectedBetCard from '@/components/bet/ProtectedBetCard';
 import { useAuth } from '@/stores/authStore';
 import { Button } from '@/components/ui/button';
-
+import { ModalBetForm } from '@/components/modals/ModalBetForm';
 
 const Bets = () => {
   const user = useAuth((state) => state.user);
@@ -43,7 +43,7 @@ const Bets = () => {
           +
         </Button>
       </div>
-      {isModalOpen && <Modal onClose={toggleModal} isOpen={isModalOpen} />}
+      {isModalOpen && <ModalBetForm onClose={toggleModal} />}
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         {data.data.map((bet) => (

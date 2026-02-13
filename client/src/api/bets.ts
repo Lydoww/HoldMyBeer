@@ -22,6 +22,6 @@ export const updateBet = async (id: number, data: UpdateBetPayload) => {
 }
 
 export const deleteBet = async (id: number) => {
+    console.log('fonction deleteBet appelé')
     await apiClient.delete(`/bets/${id}`)
-
 }
