@@ -2,7 +2,7 @@ import { getBets } from '@/api/bets';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import CreateBetForm from './CreateBetForm';
-import { BetCard } from '@/components/BetCard';
+import ProtectedBetCard from '@/components/bet/ProtectedBetCard';
 
 const Bets = () => {
   const [page, setPage] = useState(1);
@@ -28,12 +28,13 @@ const Bets = () => {
   return (
     <div>
       <CreateBetForm />
-      <div className='grid grid-cols-2 gap-8'>
-        {data.data.map((bet) => (
-          <>
-            <BetCard key={bet.id} bet={bet} />
-          </>
-        ))}
+      <div className=' pb-8 px-4'>
+        <h2 className='pb-4'>Community Bets</h2>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+          {data.data.map((bet) => (
+            <ProtectedBetCard key={bet.id} bet={bet} />
+          ))}
+        </div>
       </div>
     </div>
   );

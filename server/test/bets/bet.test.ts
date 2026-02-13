@@ -48,7 +48,6 @@ describe('Test des routes /bets', () => {
             expect(response.body).toHaveProperty('id')
             expect(response.body.title).toBe('Nouveau pari')
             betId = response.body.id
-            console.log('BET CRÉÉ AVEC ID:', betId)
         })
         it('On veut créer un pari sans token', async () => {
             await supertest(app).post('/api/bets').send({

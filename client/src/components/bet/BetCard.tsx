@@ -8,29 +8,21 @@ import {
 } from '@/components/ui/card';
 import votePositive from '@/assets/positive-vote.png';
 import voteNegative from '@/assets/negative-vote.png';
-import type {
-  Bet,
-  Choice,
-  CreateVotePayload,
-  UpdateBetPayload,
-  UpdateVotePayload,
-} from '@/types';
+import type { Bet, Choice } from '@/types';
 import { useAuth } from '@/stores/authStore';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createVote, deleteVote, updateVote } from '@/api/votes';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { useState } from 'react';
-import { deleteBet, updateBet } from '@/api/bets';
-import { Input } from './ui/input';
-import { format } from 'date-fns';
+import { Input } from '../ui/input';
 import { formattedDate } from '@/lib/utils';
+
+import { useVoteMutations } from '@/hooks/votes/useVoteMutations';
+import { useBetMutations } from '@/hooks/bets/useBetMutations';
 
 interface BetProps {
   bet: Bet;
 }
 
 export function BetCard({ bet }: BetProps) {
-  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     title: '',
@@ -38,6 +30,10 @@ export function BetCard({ bet }: BetProps) {
   });
   const user = useAuth((state) => state.user);
   const userAlreadyVoted = bet.votes.find((vote) => vote.userId === user?.id);
+
+  const { updateMutation, deleteMutation } = useBetMutations();
+  const { mutationCreateVote, mutationDeleteVote, mutationChangeVoteChoice } =
+    useVoteMutations();
 
   const handleVote = (choice: Choice) => {
     if (userAlreadyVoted == null) {
@@ -52,55 +48,13 @@ export function BetCard({ bet }: BetProps) {
     }
   };
 
-  const mutationCreateVote = useMutation({
-    mutationFn: ({ betId, data }: { betId: number; data: CreateVotePayload }) =>
-      createVote(betId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['votes'] });
-      queryClient.invalidateQueries({ queryKey: ['bets'] });
-    },
-  });
-
-  const mutationDeleteVote = useMutation({
-    mutationFn: deleteVote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['votes'] });
-      queryClient.invalidateQueries({ queryKey: ['bets'] });
-    },
-  });
-
-  const mutationChangeVoteChoice = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateVotePayload }) =>
-      updateVote(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['votes'] });
-      queryClient.invalidateQueries({ queryKey: ['bets'] });
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: UpdateBetPayload }) =>
-      updateBet(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bets'] });
-      setIsEditing(false);
-    },
-  });
-
   const handleChangeEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteBet,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['bets'] });
-    },
-  });
-
   return (
-    <Card className=' min-h-[250px] flex flex-col mx-auto w-full max-w-sm shadow-lg hover:border-gray-700 transition-colors'>
+    <Card className=' min-h-[250px] flex flex-col mx-auto w-full max-w-[500px] shadow-lg hover:border-gray-700 transition-colors'>
       <CardHeader>
         <CardTitle className='break-all line-clamp-2'>
           {isEditing ? (
@@ -137,7 +91,7 @@ export function BetCard({ bet }: BetProps) {
       </CardContent>
       <CardFooter>
         {user?.id !== bet.creatorId && (
-          <div className='flex w-full justify-between'>
+          <div className='flex min-w-full justify-between'>
             <button
               onClick={() => handleVote('success')}
               className='hover:scale-105 transition-transform cursor-pointer'
