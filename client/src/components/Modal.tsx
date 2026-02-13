@@ -6,9 +6,9 @@ import {
 } from '@/components/ui/card';
 import type { Bet, Choice } from '@/types';
 import { useAuth } from '@/stores/authStore';
-import { Button } from '../ui/button';
+import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { Input } from '../ui/input';
+import { Input } from '@/components/ui/input';
 import { formattedDate } from '@/lib/utils';
 import { ThumbsUp, ThumbsDown, Pencil, Trash2, X, Check } from 'lucide-react';
 
@@ -64,6 +64,9 @@ export const BetCard = ({ bet }: BetProps) => {
 
   return (
     <Card className='group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40'>
+      {/* Top accent bar */}
+      <div className='h-1 w-full bg-linear-to-r from-[#fde639] to-[#527de3]' />
+
       <CardHeader className='space-y-3 pb-2'>
         {/* Meta row */}
         <div className='flex items-center justify-between text-xs text-muted-foreground'>
@@ -221,4 +224,4 @@ export const BetCard = ({ bet }: BetProps) => {
       </CardFooter>
     </Card>
   );
-};
+}
