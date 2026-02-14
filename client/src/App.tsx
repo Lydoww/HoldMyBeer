@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PrivateRoutes from './components/routes/PrivateRoutes';
 import React, { Suspense } from 'react';
 import Layout from '@/components/layout/Layout';
+import PublicRoutes from './components/routes/PublicRoutes';
 
 const Login = React.lazy(() => import('@/pages/auth/Login'));
 const Register = React.lazy(() => import('@/pages/auth/Register'));
@@ -23,8 +24,10 @@ const App = () => {
                 <Route element={<Bets />} path='/bets' />
               </Route>
             </Route>
-            <Route element={<Login />} path='/login' />
-            <Route element={<Register />} path='/register' />
+            <Route element={<PublicRoutes />}>
+              <Route element={<Login />} path='/login' />
+              <Route element={<Register />} path='/register' />
+            </Route>
           </Routes>
         </Suspense>
       </BrowserRouter>
