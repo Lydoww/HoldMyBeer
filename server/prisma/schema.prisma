@@ -14,6 +14,7 @@ model User {
   points   Int    @default(0)
   bets     Bet[]
   votes    Vote[]
+  
 }
 
 model Bet {
@@ -32,7 +33,7 @@ model Vote {
   choice Choice
   user   User   @relation(fields: [userId], references: [id])
   userId Int
-  bet    Bet    @relation(fields: [betId], references: [id])
+  bet    Bet    @relation(fields: [betId], references: [id], onDelete: Cascade)
   betId  Int
   @@unique([userId, betId]) 
 }

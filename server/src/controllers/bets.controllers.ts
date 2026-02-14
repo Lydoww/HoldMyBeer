@@ -7,28 +7,39 @@ export const getBets = async (req: Request, res: Response) => {
     const pageSize = Number(req.query.pageSize) || 10
     const skip = (page - 1) * pageSize
     const take = pageSize
+    const creatorId = req.query.creatorId
+    const excludeCreatorId = req.query.excludeCreatorId
+
+    const where = creatorId ? { creatorId: Number(creatorId) } : {}
+    const whereCreatorIsExclude = excludeCreatorId ? { creatorId: { not: Number(excludeCreatorId) } } : {}
+
+
 
     const promise1 = prisma.bet.findMany({
         skip,
         take,
+        where: { ...where, ...whereCreatorIsExclude },
         orderBy: {
             createdAt: 'desc'
         },
         include: {
             creator: {
                 select: {
-                    username: true
+                    username: true,
+
                 }
             },
+            votes: true,
             _count: {
                 select: {
                     votes: true
                 }
-            }
+            },
+
         }
     })
 
-    const promise2 = prisma.bet.count()
+    const promise2 = prisma.bet.count({ where })
 
     const [data, totalBets] = await Promise.all([promise1, promise2])
 

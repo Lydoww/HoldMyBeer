@@ -55,14 +55,14 @@ const Register = () => {
     <div className='min-h-screen flex items-center justify-center px-4 sm:px-6 bg-linear-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800'>
       <div className='w-full max-w-md'>
         {/* Logo */}
-        <div className='flex justify-center mb-4'>
+        <div className='flex justify-center mb-2'>
           <img src={Logo} alt='HoldMyBeer Logo' className='w-32 h-32 ' />
         </div>
 
         {/* Card */}
         <form
           onSubmit={handleSubmit}
-          className='bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 px-4 sm:px-8 py-6 sm:py-8 space-y-4 sm:space-y-5'
+          className='bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 px-4 sm:px-8 py-6 sm:py-10 space-y-5 sm:space-y-6'
         >
           <div className='text-center'>
             <h2 className='text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white'>
@@ -73,8 +73,8 @@ const Register = () => {
             </p>
           </div>
 
-          <div className='space-y-3 sm:space-y-4'>
-            <div className='space-y-1.5'>
+          <div className='space-y-4 sm:space-y-5'>
+            <div className='space-y-2'>
               <Label
                 htmlFor='email'
                 className='text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -95,7 +95,7 @@ const Register = () => {
               />
             </div>
 
-            <div className='space-y-1.5'>
+            <div className='space-y-2'>
               <Label
                 htmlFor='username'
                 className='text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -119,7 +119,7 @@ const Register = () => {
               </p>
             </div>
 
-            <div className='space-y-1.5'>
+            <div className='space-y-2'>
               <Label
                 htmlFor='password'
                 className='text-sm font-medium text-gray-700 dark:text-gray-300'
@@ -148,12 +148,12 @@ const Register = () => {
           <Button
             disabled={isLoading}
             type='submit'
-            className='w-full h-10 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
+            className='w-full h-10 sm:h-11 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
           >
             {isLoading ? <Spinner /> : 'Create an account'}
           </Button>
 
-          <div className='text-center pt-2 sm:pt-3 border-t border-gray-100 dark:border-gray-700'>
+          <div className='text-center pt-3 sm:pt-4 border-t border-gray-100 dark:border-gray-700'>
             <p className='text-gray-600 dark:text-gray-400 text-sm'>
               Already have an account?{' '}
               <Link

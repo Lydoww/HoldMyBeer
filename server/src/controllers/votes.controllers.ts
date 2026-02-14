@@ -1,9 +1,13 @@
 import { Request, Response } from "express"
 import prisma from "../lib/db.js"
-import { ForbiddenError, NotFoundError } from "../errors/AppError.js"
+import { BadRequestError, ForbiddenError, NotFoundError } from "../errors/AppError.js"
 
 export const getVotes = async (req: Request, res: Response) => {
-    const data = await prisma.vote.findMany()
+    const userId = req.query.userId
+
+    const where = userId ? { userId: Number(userId) } : {}
+
+    const data = await prisma.vote.findMany({ where, include: { bet: true } })
     res.json(data)
 }
 
@@ -11,15 +15,28 @@ export const createVote = async (req: Request, res: Response) => {
     const { choice } = req.body
     const betId = Number(req.params.id)
     const userId = req.user.userId
-
-    const newVote = await prisma.vote.create({
-        data: {
-            choice,
-            userId,
-            betId
-        }
+    const bet = await prisma.bet.findUnique({
+        where: { id: betId }
     })
-    res.status(201).json(newVote)
+
+    if (bet == null) {
+        throw new NotFoundError('Bet does not exist')
+    } else if (userId === bet.creatorId) {
+        throw new BadRequestError('You can\'t vote for your own bet')
+    } else {
+
+        const newVote = await prisma.vote.create({
+            data: {
+                choice,
+                userId,
+                betId
+            }
+        })
+
+        res.status(201).json(newVote)
+
+    }
+
 }
 
 export const updateVote = async (req: Request, res: Response) => {

@@ -29,7 +29,7 @@ describe('Test des routes /votes', () => {
     })
     describe('POST /votes', () => {
         it('On créer un vote', async () => {
-            const response = await supertest(app).post('/api/bets/' + betId + '/votes').set('Authorization', 'Bearer ' + token1).send({
+            const response = await supertest(app).post('/api/bets/' + betId + '/votes').set('Authorization', 'Bearer ' + token2).send({
                 choice: 'success'
             }).expect(201)
             voteId = response.body.id
@@ -45,14 +45,14 @@ describe('Test des routes /votes', () => {
             }).expect(400)
         })
         it('Vote avec 2 fois sur meme pari', async () => {
-            await supertest(app).post('/api/bets/' + betId + '/votes').set('Authorization', 'Bearer ' + token1).send({
+            await supertest(app).post('/api/bets/' + betId + '/votes').set('Authorization', 'Bearer ' + token2).send({
                 choice: 'success'
             }).expect(409)
         })
     })
     describe('PATCH /votes', () => {
         it('modifier un vote', async () => {
-            await supertest(app).patch('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token1).send({
+            await supertest(app).patch('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token2).send({
                 choice: 'fail'
             }).expect(200)
         })
@@ -62,7 +62,7 @@ describe('Test des routes /votes', () => {
             }).expect(401)
         })
         it('modifier le vote d\'un autre user', async () => {
-            await supertest(app).patch('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token2).send({
+            await supertest(app).patch('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token1).send({
                 choice: 'fail'
             }).expect(403)
         })
@@ -74,7 +74,7 @@ describe('Test des routes /votes', () => {
     })
     describe('DELETE /votes', () => {
         it('Supprimer le vote d\'un autre user', async () => {
-            await supertest(app).delete('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token2).expect(403)
+            await supertest(app).delete('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token1).expect(403)
         })
         it('Supprimer un vote inexistant', async () => {
             await supertest(app).delete('/api/votes/999').set('Authorization', 'Bearer ' + token1).expect(404)
@@ -83,7 +83,7 @@ describe('Test des routes /votes', () => {
             await supertest(app).delete('/api/votes/' + voteId).expect(401)
         })
         it('Supprimer un vote', async () => {
-            await supertest(app).delete('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token1).expect(200)
+            await supertest(app).delete('/api/votes/' + voteId).set('Authorization', 'Bearer ' + token2).expect(200)
         })
     })
     afterAll(async () => {
