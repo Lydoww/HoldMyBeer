@@ -123,11 +123,11 @@ export const updateBet = async (req: Request, res: Response) => {
                 }
             })
             await Promise.all(updatePromises.filter(Boolean))
-            await tx.user.update({
+            const updatedCreator = await tx.user.update({
                 where: { id: bet.creatorId },
                 data: { points: { increment: 5 } }
             })
-            return changeBetStatus
+            return { changeBetStatus, updatedCreator }
         })
         res.json(result)
 
@@ -151,7 +151,14 @@ export const deleteBet = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
     const user = req.user.userId
     const bet = await prisma.bet.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+            _count: {
+                select: {
+                    votes: true
+                }
+            }
+        }
     })
 
     if (!bet) {
@@ -161,7 +168,15 @@ export const deleteBet = async (req: Request, res: Response) => {
         throw new ForbiddenError('You cannot delete a bet you did not create')
     }
 
+    if (bet.status !== 'open') {
+        throw new BadRequestError('You can\'t delete a bet with a status success or failed')
+    }
+
+    if (bet._count.votes > 0) {
+        throw new BadRequestError('You can\'t delete your bet if there is votes on it')
+    }
     await prisma.bet.delete({ where: { id } })
     res.status(200).json({ message: 'Bet deleted successfully' })
+
 }
 

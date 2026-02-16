@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '../lib/db.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { BadRequestError, UnauthorizedError } from '../errors/AppError.js'
+import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from '../errors/AppError.js'
 
 export const register = async (req: Request, res: Response) => {
     const { email, username, password } = req.body
@@ -50,4 +50,19 @@ export const login = async (req: Request, res: Response) => {
             points: user.points
         }
     })
+}
+
+export const me = async (req: Request, res: Response) => {
+    const userId = req.user.userId
+
+    const user = await prisma.user.findUnique({
+        where: { id: userId },
+        omit: {
+            password: true
+        }
+    })
+    if (!user) {
+        throw new NotFoundError('User not found')
+    }
+    return res.json(user)
 }

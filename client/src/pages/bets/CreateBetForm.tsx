@@ -33,22 +33,14 @@ const CreateBetForm = () => {
     <div>
       <form onSubmit={handleSubmit}>
         <Label>Title</Label>
-        <Input
-          className='text-white'
-          value={bet.title}
-          name='title'
-          onChange={handleChange}
-        />
+        <Input value={bet.title} name='title' onChange={handleChange} />
         <Label>Description</Label>
         <Input
-          className='text-white'
           value={bet.description}
           name='description'
           onChange={handleChange}
         />
-        <button type='submit' className='text-white'>
-          Add a bet
-        </button>
+        <button type='submit'>Add a bet</button>
       </form>
     </div>
   );

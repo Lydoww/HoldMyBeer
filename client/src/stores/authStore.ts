@@ -5,7 +5,7 @@ interface User {
     id: number
     email: string
     username: string
-    points: boolean
+    points: number
 }
 
 interface AuthState {
@@ -13,6 +13,7 @@ interface AuthState {
     user: User | null
     setAuth: (token: string, user: User) => void
     logout: () => void
+    updatePoints: (newPoints: number) => void
 }
 
 export const useAuth = create<AuthState>()(
@@ -21,8 +22,10 @@ export const useAuth = create<AuthState>()(
             token: null,
             user: null,
             setAuth: (token, user) => set({ token, user }),
-            logout: () => set({ token: null, user: null })
-
+            logout: () => set({ token: null, user: null }),
+            updatePoints: (newPoints) => set((prev) =>
+                prev.user ?
+                    ({ user: { ...prev.user, points: newPoints } }) : {})
         }),
 
         {

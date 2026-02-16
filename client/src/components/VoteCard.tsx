@@ -1,4 +1,3 @@
-import { formattedDate } from '@/lib/utils';
 import type { Vote } from '@/types';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
@@ -34,7 +33,11 @@ const VoteCard = ({ vote }: VoteProps) => {
         className={`shrink-0 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
           vote.bet.status === 'open'
             ? 'bg-[#fde639]/15 text-[#fde639]'
-            : 'bg-muted text-muted-foreground'
+            : vote.bet.status === 'success'
+              ? 'bg-[#4ade80]/15 text-[#0eb727]'
+              : vote.bet.status === 'failed'
+                ? 'bg-[#f87171]/15 text-[#c60a26]'
+                : 'bg-[#fde639]/15 text-[#fde639]'
         }`}
       >
         {vote.bet.status}
