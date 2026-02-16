@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { me } from '@/api/auth';
 import { ModalBetForm } from '@/components/modals/ModalBetForm';
+import Leaderboard from '@/components/Leaderboard';
 
 const Homepage = () => {
   const user = useAuth((state) => state.user);
@@ -53,7 +54,7 @@ const Homepage = () => {
     isPending,
     error,
   } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['me'],
     queryFn: () => me(),
   });
 
@@ -118,6 +119,18 @@ const Homepage = () => {
         </div>
       </div>
 
+      {/* Leaderboard section */}
+      <section className='mt-8 max-w-7xl mx-auto px-6'>
+        <div className='flex items-center gap-2 mb-5'>
+          <Trophy size={20} className='text-[#fde639]' />
+          <h2 className='text-lg font-bold text-card-foreground'>
+            Leaderboard
+          </h2>
+        </div>
+
+        <Leaderboard />
+      </section>
+
       <div className='max-w-7xl mx-auto px-6'>
         {/* Bets section */}
         <section className='mt-8'>
@@ -132,7 +145,7 @@ const Homepage = () => {
               </span>
             )}
             <Button
-              variant={'custom'}
+              variant={'outline'}
               onClick={toggleModal}
               size='sm'
               className='hidden md:flex items-center gap-1.5'

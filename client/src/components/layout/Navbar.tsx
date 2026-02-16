@@ -44,7 +44,7 @@ const Navbar = () => {
           <img
             src={Logo}
             alt='Hold My Beer'
-            className='h-16 w-auto hover:scale-105 transition-transform'
+            className='h-15 bg-[#191919] w-auto hover:scale-105 transition-transform'
           />
         </NavLink>
 

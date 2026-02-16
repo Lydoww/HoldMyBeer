@@ -1,6 +1,7 @@
 import authRoutes from './routes/auth.routes.js'
 import betsRoutes from './routes/bets.routes.js'
 import votesRoutes from './routes/votes.routes.js'
+import userRoutes from './routes/user.routes.js'
 
 import express from 'express'
 import cors from 'cors'
@@ -15,6 +16,7 @@ app.use(cors({ origin: 'http://localhost:5173' }))
 app.use('/api/auth', authRoutes)
 app.use('/api', authenticateToken, betsRoutes)
 app.use('/api', authenticateToken, votesRoutes)
+app.use('/api', authenticateToken, userRoutes)
 
 app.use(errorMiddleware)
 

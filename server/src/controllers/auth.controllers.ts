@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import prisma from '../lib/db.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { BadRequestError, ForbiddenError, NotFoundError, UnauthorizedError } from '../errors/AppError.js'
+import { BadRequestError, NotFoundError, UnauthorizedError } from '../errors/AppError.js'
 
 export const register = async (req: Request, res: Response) => {
     const { email, username, password } = req.body

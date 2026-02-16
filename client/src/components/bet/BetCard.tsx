@@ -188,92 +188,107 @@ export const BetCard = ({ bet }: BetProps) => {
             </div>
 
             {/* Vote buttons */}
-            <div className='flex items-center justify-between'>
-              <button
-                onClick={() => handleVote('success')}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
-                  userAlreadyVoted?.choice === 'success'
-                    ? 'bg-[#fde639]/20 text-[#fde639] ring-1 ring-[#fde639]/50'
-                    : 'text-muted-foreground hover:bg-[#fde639]/10 hover:text-[#fde639]'
-                }`}
-              >
-                <ThumbsUp size={16} />
-                <span>{successVotes}</span>
-              </button>
+            {bet.status !== 'open' ? (
+              <div className='flex justify-around mt-4 font-semibold'>
+                <h3>Bet closed</h3>
+                <p>Total bets: {bet._count.votes} </p>
+              </div>
+            ) : (
+              <div className='flex items-center justify-between'>
+                <button
+                  onClick={() => handleVote('success')}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                    userAlreadyVoted?.choice === 'success'
+                      ? 'bg-[#fde639]/20 text-[#fde639] ring-1 ring-[#fde639]/50'
+                      : 'text-muted-foreground hover:bg-[#fde639]/10 hover:text-[#fde639]'
+                  }`}
+                >
+                  <ThumbsUp size={16} />
+                  <span>{successVotes}</span>
+                </button>
 
-              <span className='text-xs text-muted-foreground font-medium'>
-                {totalVotes} vote{totalVotes !== 1 ? 's' : ''}
-              </span>
+                <span className='text-xs text-muted-foreground font-medium'>
+                  {totalVotes} vote{totalVotes !== 1 ? 's' : ''}
+                </span>
 
-              <button
-                onClick={() => handleVote('fail')}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
-                  userAlreadyVoted?.choice === 'fail'
-                    ? 'bg-[#527de3]/20 text-[#527de3] ring-1 ring-[#527de3]/50'
-                    : 'text-muted-foreground hover:bg-[#527de3]/10 hover:text-[#527de3]'
-                }`}
-              >
-                <span>{failVotes}</span>
-                <ThumbsDown size={16} />
-              </button>
-            </div>
+                <button
+                  onClick={() => handleVote('fail')}
+                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+                    userAlreadyVoted?.choice === 'fail'
+                      ? 'bg-[#527de3]/20 text-[#527de3] ring-1 ring-[#527de3]/50'
+                      : 'text-muted-foreground hover:bg-[#527de3]/10 hover:text-[#527de3]'
+                  }`}
+                >
+                  <span>{failVotes}</span>
+                  <ThumbsDown size={16} />
+                </button>
+              </div>
+            )}
           </div>
         )}
 
         {/* Owner actions */}
-        {isOwner && (
-          <div className='flex w-full gap-2'>
-            {!isEditing ? (
-              <>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='flex-1 gap-1.5 rounded-lg border-border text-muted-foreground hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10 transition-all'
-                  onClick={toggleDeleteModal}
-                >
-                  <Trash2 size={14} />
-                  Delete
-                </Button>
-                {isOpen && (
-                  <ModalDeleteBet bet={bet} onClose={toggleDeleteModal} />
-                )}
-                <Button
-                  size='sm'
-                  className='flex-1 gap-1.5 rounded-lg font-semibold text-black bg-[#fde639] hover:brightness-90 transition-all'
-                  onClick={() => {
-                    setIsEditing(true);
-                    setEditData({
-                      title: bet.title,
-                      description: bet.description,
-                    });
-                  }}
-                >
-                  <Pencil size={14} />
-                  Edit
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                  variant='outline'
-                  size='sm'
-                  className='flex-1 gap-1.5 rounded-lg border-border text-muted-foreground hover:border-border hover:bg-muted transition-all'
-                  onClick={() => setIsEditing(false)}
-                >
-                  <X size={14} />
-                  Cancel
-                </Button>
-                <Button
-                  size='sm'
-                  className='flex-1 gap-1.5 rounded-lg font-semibold  bg-[#527de3] hover:brightness-90 transition-all'
-                  onClick={handleSave}
-                >
-                  <Check size={14} />
-                  Save
-                </Button>
-              </>
-            )}
-          </div>
+        {bet.status !== 'open' ? (
+          <p className='text-xs text-muted-foreground'>This bet is closed</p>
+        ) : bet._count.votes > 0 ? (
+          <p className='text-xs text-muted-foreground'>
+            Votes submitted – editing disabled
+          </p>
+        ) : (
+          isOwner && (
+            <div className='flex w-full gap-2'>
+              {!isEditing ? (
+                <>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='flex-1 gap-1.5 rounded-lg border-border text-muted-foreground hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10 transition-all'
+                    onClick={toggleDeleteModal}
+                  >
+                    <Trash2 size={14} />
+                    Delete
+                  </Button>
+                  {isOpen && (
+                    <ModalDeleteBet bet={bet} onClose={toggleDeleteModal} />
+                  )}
+                  <Button
+                    size='sm'
+                    className='flex-1 gap-1.5 rounded-lg font-semibold text-black bg-[#fde639] hover:brightness-90 transition-all'
+                    onClick={() => {
+                      setIsEditing(true);
+                      setEditData({
+                        title: bet.title,
+                        description: bet.description,
+                      });
+                    }}
+                  >
+                    <Pencil size={14} />
+                    Edit
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    className='flex-1 gap-1.5 rounded-lg border-border text-muted-foreground hover:border-border hover:bg-muted transition-all'
+                    onClick={() => setIsEditing(false)}
+                  >
+                    <X size={14} />
+                    Cancel
+                  </Button>
+                  <Button
+                    size='sm'
+                    className='flex-1 gap-1.5 rounded-lg font-semibold  bg-[#527de3] hover:brightness-90 transition-all'
+                    onClick={handleSave}
+                  >
+                    <Check size={14} />
+                    Save
+                  </Button>
+                </>
+              )}
+            </div>
+          )
         )}
       </CardFooter>
       {selectedResult && (

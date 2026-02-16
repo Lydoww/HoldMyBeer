@@ -48,3 +48,10 @@ export interface Vote {
     bet: Bet
     betId: number
 }
+
+export interface User {
+    id: number
+    email: string
+    username: string
+    points: number
+}

@@ -1,19 +1,18 @@
 import express from 'express'
-import authenticateToken from '../middlewares/auth.middleware.js'
 import { createBet, deleteBet, getBets, getOneBet, updateBet } from '../controllers/bets.controllers.js'
 import { createBetSchema, updateBetSchema } from '../validators/bets.schema.js';
 import { validateMiddleware } from '../middlewares/validate.middleware.js';
 
 const router = express.Router()
 
-router.get('/bets', authenticateToken, getBets)
+router.get('/bets', getBets)
 
-router.post('/bets', authenticateToken, validateMiddleware(createBetSchema), createBet)
+router.post('/bets', validateMiddleware(createBetSchema), createBet)
 
-router.get('/bets/:id', authenticateToken, getOneBet)
+router.get('/bets/:id', getOneBet)
 
-router.delete('/bets/:id', authenticateToken, deleteBet)
+router.delete('/bets/:id', deleteBet)
 
-router.patch('/bets/:id', authenticateToken, validateMiddleware(updateBetSchema), updateBet)
+router.patch('/bets/:id', validateMiddleware(updateBetSchema), updateBet)
 
 export default router

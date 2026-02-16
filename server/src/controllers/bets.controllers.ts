@@ -82,7 +82,14 @@ export const updateBet = async (req: Request, res: Response) => {
     const user = req.user.userId
 
     const bet = await prisma.bet.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+            _count: {
+                select: {
+                    votes: true
+                }
+            }
+        },
     })
     if (!bet) {
         throw new NotFoundError('Bet not found')
@@ -91,13 +98,12 @@ export const updateBet = async (req: Request, res: Response) => {
         throw new ForbiddenError('You cannot update a bet you did not create')
     }
 
-    if (bet.status !== 'open' && status) {
+    if (bet.status !== 'open') {
         throw new BadRequestError('This bet is already closed')
     }
 
     if (bet.status === 'open' && (status === 'success' || status === 'failed')) {
         const result = await prisma.$transaction(async (tx) => {
-
             const changeBetStatus = await tx.bet.update({
                 where: {
                     id
@@ -122,6 +128,7 @@ export const updateBet = async (req: Request, res: Response) => {
 
                 }
             })
+
             await Promise.all(updatePromises.filter(Boolean))
             const updatedCreator = await tx.user.update({
                 where: { id: bet.creatorId },
@@ -132,6 +139,9 @@ export const updateBet = async (req: Request, res: Response) => {
         res.json(result)
 
     } else {
+        if (bet._count.votes > 0) {
+            throw new BadRequestError('You can\'t update your bet if there is votes on it')
+        }
         const updatedBet = await prisma.bet.update({
             where: {
                 id
@@ -143,7 +153,6 @@ export const updateBet = async (req: Request, res: Response) => {
         })
         res.json(updatedBet)
     }
-
 
 }
 
