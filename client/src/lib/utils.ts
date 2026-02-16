@@ -14,4 +14,3 @@ export const formattedDate = (date: string) => {
   const newDate = new Date(date)
   return format(newDate, "MM/dd/yyyy")
 }
-

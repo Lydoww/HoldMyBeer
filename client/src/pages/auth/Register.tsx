@@ -36,7 +36,7 @@ const Register = () => {
       const response = await registerUser(
         user.email,
         user.username,
-        user.password
+        user.password,
       );
       const { token, user: userData } = response;
       setAuth(token, userData);
@@ -65,7 +65,7 @@ const Register = () => {
           className='bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 px-4 sm:px-8 py-6 sm:py-10 space-y-5 sm:space-y-6'
         >
           <div className='text-center'>
-            <h2 className='text-xl sm:text-2xl font-semibold text-gray-900 dark:text-white'>
+            <h2 className='text-xl sm:text-2xl font-semibold text-gray-200 '>
               Create Account
             </h2>
             <p className='text-gray-500 dark:text-gray-400 text-sm mt-1'>
@@ -89,8 +89,8 @@ const Register = () => {
                 value={user.email}
                 onChange={handleChange}
                 className={cn(
-                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
-                  error && 'border-red-500 border-2'
+                  'text-gray-200 h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2',
                 )}
               />
             </div>
@@ -110,8 +110,8 @@ const Register = () => {
                 value={user.username}
                 onChange={handleChange}
                 className={cn(
-                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
-                  error && 'border-red-500 border-2'
+                  'text-gray-200 h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2',
                 )}
               />
               <p className='text-xs text-gray-500 dark:text-gray-400'>
@@ -134,8 +134,8 @@ const Register = () => {
                 value={user.password}
                 onChange={handleChange}
                 className={cn(
-                  'h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
-                  error && 'border-red-500 border-2'
+                  'text-gray-200 h-10 sm:h-11 bg-gray-50 dark:bg-gray-900/50 border-gray-300 dark:border-gray-600 focus:border-amber-500 focus:ring-amber-500/20',
+                  error && 'border-red-500 border-2',
                 )}
               />
             </div>
@@ -148,7 +148,7 @@ const Register = () => {
           <Button
             disabled={isLoading}
             type='submit'
-            className='w-full h-10 sm:h-11 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-medium rounded-lg transition-all hover:shadow-md'
+            className='text-gray-200 w-full h-10 sm:h-11 bg-linear-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700  font-medium rounded-lg transition-all hover:shadow-md'
           >
             {isLoading ? <Spinner /> : 'Create an account'}
           </Button>

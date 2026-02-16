@@ -1,4 +1,5 @@
 export type BetStatus = 'open' | 'success' | 'failed'
+export type BetResult = 'success' | 'failed'
 export type Choice = 'success' | 'fail'
 
 export interface CreateBetPayload {

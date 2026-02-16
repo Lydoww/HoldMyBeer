@@ -4,7 +4,7 @@ import {
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import type { Bet, Choice } from '@/types';
+import { type BetResult, type Bet, type Choice } from '@/types';
 import { useAuth } from '@/stores/authStore';
 import { Button } from '../ui/button';
 import { useState } from 'react';
@@ -15,6 +15,14 @@ import { ThumbsUp, ThumbsDown, Pencil, Trash2, X, Check } from 'lucide-react';
 import { useVoteMutations } from '@/hooks/votes/useVoteMutations';
 import { useBetMutations } from '@/hooks/bets/useBetMutations';
 import ModalDeleteBet from '../modals/ModalDeleteBet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import ModalConfirmChoice from '../modals/ModalConfirmChoice';
 
 interface BetProps {
   bet: Bet;
@@ -27,11 +35,13 @@ export const BetCard = ({ bet }: BetProps) => {
     description: '',
   });
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedResult, setSelectedResult] = useState<BetResult | null>(null);
+
   const user = useAuth((state) => state.user);
   const userAlreadyVoted = bet.votes.find((vote) => vote.userId === user?.id);
   const isOwner = user?.id === bet.creatorId;
 
-  const { updateMutation, deleteMutation } = useBetMutations();
+  const { updateMutation } = useBetMutations();
   const { mutationCreateVote, mutationDeleteVote, mutationChangeVoteChoice } =
     useVoteMutations();
 
@@ -64,7 +74,9 @@ export const BetCard = ({ bet }: BetProps) => {
     setIsEditing(false);
   };
 
-  const toggleModal = () => setIsOpen(!isOpen);
+  const toggleDeleteModal = () => setIsOpen(!isOpen);
+
+  const closeChoiceModal = () => setSelectedResult(null);
 
   return (
     <Card className='group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40'>
@@ -75,15 +87,53 @@ export const BetCard = ({ bet }: BetProps) => {
             @{bet.creator.username}
           </span>
           <div className='flex items-center gap-2'>
-            <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                bet.status === 'open'
-                  ? 'bg-[#fde639]/15 text-[#fde639]'
-                  : 'bg-muted text-muted-foreground'
-              }`}
-            >
-              {bet.status}
-            </span>
+            {isOwner && bet.status === 'open' ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                      bet.status === 'open'
+                        ? 'bg-[#fde639]/15 text-[#fde639] cursor-pointer'
+                        : bet.status === 'success'
+                          ? 'bg-[#fde639]/15 text-[#16e821]'
+                          : bet.status === 'failed'
+                            ? 'bg-[#fde639]/15 text-[#c60a26]'
+                            : 'bg-[#fde639]/15 text-[#fde639]'
+                    }`}
+                  >
+                    {bet.status}
+                  </span>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      onClick={() => setSelectedResult('success')}
+                    >
+                      Success
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setSelectedResult('failed')}
+                    >
+                      Failed
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <span
+                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                  bet.status === 'open'
+                    ? 'bg-[#fde639]/15 text-[#fde639] '
+                    : bet.status === 'success'
+                      ? 'bg-[#4ade80]/15 text-[#0eb727]'
+                      : bet.status === 'failed'
+                        ? 'bg-[#f87171]/15 text-[#c60a26]'
+                        : 'bg-[#fde639]/15 text-[#fde639]'
+                }`}
+              >
+                {bet.status}
+              </span>
+            )}
             <span>{formattedDate(bet.createdAt)}</span>
           </div>
         </div>
@@ -94,7 +144,7 @@ export const BetCard = ({ bet }: BetProps) => {
             value={editData.title}
             name='title'
             onChange={handleChangeEdit}
-            className='h-10 rounded-lg bg-muted border-border text-card-foreground focus:ring-[#527de3] focus:border-[#527de3]'
+            className='h-10 rounded-lg bg-muted border-border focus:ring-[#527de3] focus:border-[#527de3]'
             placeholder='Bet title'
           />
         ) : (
@@ -179,12 +229,14 @@ export const BetCard = ({ bet }: BetProps) => {
                   variant='outline'
                   size='sm'
                   className='flex-1 gap-1.5 rounded-lg border-border text-muted-foreground hover:border-red-500/50 hover:text-red-400 hover:bg-red-500/10 transition-all'
-                  onClick={toggleModal}
+                  onClick={toggleDeleteModal}
                 >
                   <Trash2 size={14} />
                   Delete
                 </Button>
-                {isOpen && <ModalDeleteBet bet={bet} onClose={toggleModal} />}
+                {isOpen && (
+                  <ModalDeleteBet bet={bet} onClose={toggleDeleteModal} />
+                )}
                 <Button
                   size='sm'
                   className='flex-1 gap-1.5 rounded-lg font-semibold text-black bg-[#fde639] hover:brightness-90 transition-all'
@@ -213,7 +265,7 @@ export const BetCard = ({ bet }: BetProps) => {
                 </Button>
                 <Button
                   size='sm'
-                  className='flex-1 gap-1.5 rounded-lg font-semibold text-white bg-[#527de3] hover:brightness-90 transition-all'
+                  className='flex-1 gap-1.5 rounded-lg font-semibold  bg-[#527de3] hover:brightness-90 transition-all'
                   onClick={handleSave}
                 >
                   <Check size={14} />
@@ -224,6 +276,13 @@ export const BetCard = ({ bet }: BetProps) => {
           </div>
         )}
       </CardFooter>
+      {selectedResult && (
+        <ModalConfirmChoice
+          onClose={closeChoiceModal}
+          bet={bet}
+          selectedResult={selectedResult}
+        />
+      )}
     </Card>
   );
 };

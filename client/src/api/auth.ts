@@ -9,3 +9,8 @@ export const registerUser = async (email: string, username: string, password: st
     const response = await apiClient.post('/auth/register', { email, username, password })
     return response.data
 }
+
+export const me = async () => {
+    const response = await apiClient.get('/auth/me')
+    return response.data
+}
