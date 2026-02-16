@@ -2,12 +2,13 @@ import express from 'express'
 import { createBet, deleteBet, getBets, getOneBet, updateBet } from '../controllers/bets.controllers.js'
 import { createBetSchema, updateBetSchema } from '../validators/bets.schema.js';
 import { validateMiddleware } from '../middlewares/validate.middleware.js';
+import { upload } from '../lib/multer.js';
 
 const router = express.Router()
 
 router.get('/bets', getBets)
 
-router.post('/bets', validateMiddleware(createBetSchema), createBet)
+router.post('/bets', upload, validateMiddleware(createBetSchema), createBet)
 
 router.get('/bets/:id', getOneBet)
 

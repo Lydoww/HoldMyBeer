@@ -5,6 +5,7 @@ export type Choice = 'success' | 'fail'
 export interface CreateBetPayload {
     title: string,
     description: string
+    image?: File
 }
 
 export interface CreateVotePayload {
@@ -29,6 +30,7 @@ export interface Bet {
     creatorId: number
     creator: { username: string }
     _count: { votes: number }
+    imageURL?: string
     votes: Vote[]
     createdAt: string
 }

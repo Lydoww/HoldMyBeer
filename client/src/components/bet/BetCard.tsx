@@ -80,7 +80,13 @@ export const BetCard = ({ bet }: BetProps) => {
 
   return (
     <Card className='group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40'>
+        {bet.imageURL && (
+          <div className='rounded-lg overflow-hidden'>
+            <img className='0 object-cover' src={bet.imageURL} alt='' />
+          </div>
+        )}
       <CardHeader className='space-y-3 pb-2'>
+
         {/* Meta row */}
         <div className='flex items-center justify-between text-xs text-muted-foreground'>
           <span className='font-medium text-[#527de3]'>

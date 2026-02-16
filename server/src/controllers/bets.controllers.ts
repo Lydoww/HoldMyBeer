@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import prisma from "../lib/db.js"
 import { BadRequestError, ForbiddenError, NotFoundError } from "../errors/AppError.js"
+import cloudinary from "../lib/cloudinary.js"
 
 export const getBets = async (req: Request, res: Response) => {
     const page = Number(req.query.page) || 1
@@ -54,11 +55,20 @@ export const getBets = async (req: Request, res: Response) => {
 
 export const createBet = async (req: Request, res: Response) => {
     const { title, description } = req.body
+    let imageURL;
+
+    if (req.file) {
+        const convert = req.file.buffer.toString('base64')
+        const dataURI = `data:${req.file.mimetype};base64,${convert}`
+        const response = await cloudinary.uploader.upload(dataURI)
+        imageURL = response.secure_url
+    }
 
     const newObj = await prisma.bet.create({
         data: {
             title,
             description,
+            imageURL,
             creatorId: req.user.userId
         }
     }

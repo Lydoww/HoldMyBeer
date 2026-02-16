@@ -7,7 +7,13 @@ export const getBets = async (page: number, pageSize: number, creatorId?: number
 }
 
 export const createBet = async (data: CreateBetPayload) => {
-    const response = await apiClient.post('/bets', data)
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('description', data.description);
+    if (data.image) {
+        formData.append('image', data.image);
+    }
+    const response = await apiClient.post('/bets', formData)
     return response.data
 }
 

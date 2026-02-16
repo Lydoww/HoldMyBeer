@@ -16,12 +16,14 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
     title: '',
     description: '',
   });
+  const [image, setImage] = useState<File | undefined>(undefined);
 
   const mutation = useMutation({
     mutationFn: createBet,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bets'] });
       setBet({ title: '', description: '' });
+      setImage(undefined);
       onClose();
     },
   });
@@ -34,7 +36,7 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bet.title.trim()) return;
-    mutation.mutate(bet);
+    mutation.mutate({ ...bet, image });
   };
 
   return (
@@ -92,6 +94,22 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
               value={bet.description}
               onChange={handleChange}
               placeholder='Add some details about this bet...'
+              className='h-11 rounded-lg bg-muted border-border text-card-foreground placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
+            />
+          </div>
+          <div className='space-y-2'>
+            <Label
+              htmlFor='image'
+              className='text-sm font-medium text-card-foreground'
+            >
+              Upload an image
+            </Label>
+            <Input
+              id='image'
+              name='image'
+              type='file'
+              onChange={(e) => setImage(e.target.files?.[0] ?? undefined)}
+              accept='image/*'
               className='h-11 rounded-lg bg-muted border-border text-card-foreground placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
             />
           </div>
