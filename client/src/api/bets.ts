@@ -1,4 +1,4 @@
-import type { CreateBetPayload, PaginatedBetsResponse, UpdateBetPayload } from "@/types";
+import type { Bet, CreateBetPayload, PaginatedBetsResponse, UpdateBetPayload } from "@/types";
 import apiClient from "./interceptors";
 
 export const getBets = async (page: number, pageSize: number, creatorId?: number, excludeCreatorId?: number): Promise<PaginatedBetsResponse> => {
@@ -17,7 +17,7 @@ export const createBet = async (data: CreateBetPayload) => {
     return response.data
 }
 
-export const getOneBet = async (id: number) => {
+export const getOneBet = async (id: number): Promise<Bet> => {
     const response = await apiClient.get(`/bets/${id}`)
     return response.data
 }

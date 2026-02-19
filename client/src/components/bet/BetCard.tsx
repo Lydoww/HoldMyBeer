@@ -9,7 +9,7 @@ import { useAuth } from '@/stores/authStore';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { Input } from '../ui/input';
-import { formattedDate } from '@/lib/utils';
+import { cn, formattedDate } from '@/lib/utils';
 import { ThumbsUp, ThumbsDown, Pencil, Trash2, X, Check } from 'lucide-react';
 
 import { useVoteMutations } from '@/hooks/votes/useVoteMutations';
@@ -23,6 +23,13 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
 import ModalConfirmChoice from '../modals/ModalConfirmChoice';
+import StatusBadge from '../ui/StatusBadge';
+import { Link } from 'react-router';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '../ui/hover-card';
 
 interface BetProps {
   bet: Bet;
@@ -78,15 +85,28 @@ export const BetCard = ({ bet }: BetProps) => {
 
   const closeChoiceModal = () => setSelectedResult(null);
 
-  return (
-    <Card className='group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40'>
-        {bet.imageURL && (
-          <div className='rounded-lg overflow-hidden'>
-            <img className='0 object-cover' src={bet.imageURL} alt='' />
-          </div>
-        )}
-      <CardHeader className='space-y-3 pb-2'>
+  const successCount = bet.votes.filter(
+    (vote) => vote.choice === 'success',
+  ).length;
+  const failCount = bet.votes.filter((vote) => vote.choice === 'fail').length;
 
+  return (
+    <Card
+      className={cn(
+        'group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40',
+        bet.imageURL && 'pt-0',
+      )}
+    >
+      {bet.imageURL && (
+        <div className='rounded-t-lg overflow-hidden'>
+          <img
+            className='object-cover w-full h-[200px]'
+            src={bet.imageURL}
+            alt=''
+          />
+        </div>
+      )}
+      <CardHeader className='space-y-3 pb-2'>
         {/* Meta row */}
         <div className='flex items-center justify-between text-xs text-muted-foreground'>
           <span className='font-medium text-[#527de3]'>
@@ -95,20 +115,8 @@ export const BetCard = ({ bet }: BetProps) => {
           <div className='flex items-center gap-2'>
             {isOwner && bet.status === 'open' ? (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                      bet.status === 'open'
-                        ? 'bg-[#fde639]/15 text-[#fde639] cursor-pointer'
-                        : bet.status === 'success'
-                          ? 'bg-[#fde639]/15 text-[#16e821]'
-                          : bet.status === 'failed'
-                            ? 'bg-[#fde639]/15 text-[#c60a26]'
-                            : 'bg-[#fde639]/15 text-[#fde639]'
-                    }`}
-                  >
-                    {bet.status}
-                  </span>
+                <DropdownMenuTrigger className='cursor-pointer' asChild>
+                  <StatusBadge status={bet.status} />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuGroup>
@@ -126,19 +134,7 @@ export const BetCard = ({ bet }: BetProps) => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <span
-                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                  bet.status === 'open'
-                    ? 'bg-[#fde639]/15 text-[#fde639] '
-                    : bet.status === 'success'
-                      ? 'bg-[#4ade80]/15 text-[#0eb727]'
-                      : bet.status === 'failed'
-                        ? 'bg-[#f87171]/15 text-[#c60a26]'
-                        : 'bg-[#fde639]/15 text-[#fde639]'
-                }`}
-              >
-                {bet.status}
-              </span>
+              <StatusBadge status={bet.status} />
             )}
             <span>{formattedDate(bet.createdAt)}</span>
           </div>
@@ -154,9 +150,25 @@ export const BetCard = ({ bet }: BetProps) => {
             placeholder='Bet title'
           />
         ) : (
-          <h3 className='text-lg font-bold text-card-foreground leading-tight line-clamp-2 break-all'>
-            {bet.title}
-          </h3>
+          <HoverCard openDelay={10} closeDelay={100}>
+            <Link to={`/bets/${bet.id}`}>
+              <HoverCardTrigger asChild>
+                <Button variant='link' className='cursor-pointer'>
+                  {bet.title}
+                </Button>
+              </HoverCardTrigger>
+            </Link>
+            <HoverCardContent className='flex w-fit flex-col'>
+              <div className='flex justify-between gap-4'>
+                <div className='shrink-0 w-fit inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#4ade80]/15 text-[#0eb727]'>
+                  Success votes: {successCount}
+                </div>
+                <div className='shrink-0 w-24 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#f87171]/15 text-[#c60a26]'>
+                  Fail votes: {failCount}
+                </div>
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         )}
       </CardHeader>
 

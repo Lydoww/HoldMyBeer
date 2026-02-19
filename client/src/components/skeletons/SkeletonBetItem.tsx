@@ -9,7 +9,7 @@ import {
 
 export function SkeletonBetItem() {
   return (
-    <Card className=' min-h-[200px] flex flex-col mx-auto w-full max-w-sm shadow-lg hover:border-gray-700 transition-colors'>
+    <Card className='group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40'>
       <CardHeader>
         <CardTitle className='break-all line-clamp-2 bg-gray-800 rounded-full h-2 w-60 animate-pulse' />
         <div className='flex justify-between px-4 py-2'>

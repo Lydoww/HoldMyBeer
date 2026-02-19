@@ -1,7 +1,7 @@
 import { getBets } from '@/api/bets';
 import { getVotes } from '@/api/votes';
 import ProtectedBetCard from '@/components/bet/ProtectedBetCard';
-import { SkeletonBetItem } from '@/components/layout/SkeletonBetItem';
+import { SkeletonBetItem } from '@/components/skeletons/SkeletonBetItem';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import VoteCard from '@/components/VoteCard';
@@ -45,7 +45,7 @@ const Homepage = () => {
     isPending: betsLoading,
     error: betsError,
   } = useQuery({
-    queryKey: ['bets', page, pageSize, user?.id],
+    queryKey: ['bets', 'homepage', page, pageSize, user?.id],
     queryFn: () => getBets(page, pageSize, user?.id),
   });
 

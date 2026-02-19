@@ -78,7 +78,24 @@ export const createBet = async (req: Request, res: Response) => {
 
 export const getOneBet = async (req: Request, res: Response) => {
     const id = Number(req.params.id)
-    const bet = await prisma.bet.findUnique({ where: { id } })
+    const bet = await prisma.bet.findUnique({
+        where: { id },
+        include: {
+            creator: {
+                select: {
+                    username: true,
+
+                }
+            },
+            votes: true,
+            _count: {
+                select: {
+                    votes: true
+                }
+            },
+
+        }
+    })
     if (bet == null) {
         throw new NotFoundError('Bet not found')
     }

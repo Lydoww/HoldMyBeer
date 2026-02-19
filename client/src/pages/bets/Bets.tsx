@@ -3,8 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import ProtectedBetCard from '@/components/bet/ProtectedBetCard';
 import { useAuth } from '@/stores/authStore';
-import { Button } from '@/components/ui/button';
-import { ModalBetForm } from '@/components/modals/ModalBetForm';
 
 const Bets = () => {
   const user = useAuth((state) => state.user);
@@ -12,7 +10,7 @@ const Bets = () => {
   const [pageSize, setPageSize] = useState(10);
 
   const { data, isPending, error } = useQuery({
-    queryKey: ['bets', page, pageSize, user?.id],
+    queryKey: ['bets', 'community', page, pageSize, user?.id],
     queryFn: () => getBets(page, pageSize, undefined, user?.id),
   });
 
@@ -38,7 +36,7 @@ const Bets = () => {
       </div>
       
 
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+      <div className='grid items-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
         {data.data.map((bet) => (
           <ProtectedBetCard key={bet.id} bet={bet} />
         ))}
