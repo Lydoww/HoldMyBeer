@@ -52,11 +52,21 @@ export const BetCard = ({ bet }: BetProps) => {
   const { mutationCreateVote, mutationDeleteVote, mutationChangeVoteChoice } =
     useVoteMutations();
 
-  const successVotes = bet.votes.filter((v) => v.choice === 'success').length;
-  const failVotes = bet.votes.filter((v) => v.choice === 'fail').length;
+  const SuccessOrFailVotes = bet.votes.reduce(
+    (acc, currentValue) => {
+      if (currentValue.choice === 'success') {
+        acc.success++;
+      } else {
+        acc.fail++;
+      }
+      return acc;
+    },
+    { success: 0, fail: 0 },
+  );
+
   const totalVotes = bet._count.votes;
   const successPercent =
-    totalVotes > 0 ? (successVotes / totalVotes) * 100 : 50;
+    totalVotes > 0 ? (SuccessOrFailVotes.success / totalVotes) * 100 : 50;
 
   const handleVote = (choice: Choice) => {
     if (userAlreadyVoted == null) {
@@ -85,15 +95,10 @@ export const BetCard = ({ bet }: BetProps) => {
 
   const closeChoiceModal = () => setSelectedResult(null);
 
-  const successCount = bet.votes.filter(
-    (vote) => vote.choice === 'success',
-  ).length;
-  const failCount = bet.votes.filter((vote) => vote.choice === 'fail').length;
-
   return (
     <Card
       className={cn(
-        'group relative min-h-[260px] flex flex-col mx-auto w-full max-w-[500px] overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40',
+        'break-inside-avoid group relative mb-6 flex flex-col mx-auto w-full overflow-hidden rounded-2xl border border-border bg-card shadow-lg transition-all hover:shadow-[0_0_24px_rgba(82,125,227,0.15)] hover:border-[#527de3]/40',
         bet.imageURL && 'pt-0',
       )}
     >
@@ -161,10 +166,10 @@ export const BetCard = ({ bet }: BetProps) => {
             <HoverCardContent className='flex w-fit flex-col'>
               <div className='flex justify-between gap-4'>
                 <div className='shrink-0 w-fit inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#4ade80]/15 text-[#0eb727]'>
-                  Success votes: {successCount}
+                  Success votes: {SuccessOrFailVotes.success}
                 </div>
                 <div className='shrink-0 w-24 inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-[#f87171]/15 text-[#c60a26]'>
-                  Fail votes: {failCount}
+                  Fail votes: {SuccessOrFailVotes.fail}
                 </div>
               </div>
             </HoverCardContent>
@@ -222,7 +227,7 @@ export const BetCard = ({ bet }: BetProps) => {
                   }`}
                 >
                   <ThumbsUp size={16} />
-                  <span>{successVotes}</span>
+                  <span>{SuccessOrFailVotes.success}</span>
                 </button>
 
                 <span className='text-xs text-muted-foreground font-medium'>
@@ -237,7 +242,7 @@ export const BetCard = ({ bet }: BetProps) => {
                       : 'text-muted-foreground hover:bg-[#527de3]/10 hover:text-[#527de3]'
                   }`}
                 >
-                  <span>{failVotes}</span>
+                  <span>{SuccessOrFailVotes.fail}</span>
                   <ThumbsDown size={16} />
                 </button>
               </div>

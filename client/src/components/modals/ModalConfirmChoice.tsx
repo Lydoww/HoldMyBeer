@@ -3,6 +3,7 @@ import { Button } from '../ui/button';
 import type { Bet, BetResult } from '@/types';
 import { useBetMutations } from '@/hooks/bets/useBetMutations';
 import { useAuth } from '@/stores/authStore';
+import ModalPortal from './ModalPortal';
 
 interface ModalProps {
   onClose: () => void;
@@ -27,17 +28,14 @@ const ModalConfirmChoice = ({ onClose, selectedResult, bet }: ModalProps) => {
   };
 
   return (
-    <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
-      onClick={onClose}
-    >
+    <ModalPortal onClose={onClose}>
       <div
         className='relative w-full max-w-md mx-4 rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200'
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className='flex items-center justify-between mb-6'>
-          <h2 className='text-xl font-semibold text-card-foreground'>
+        <div className='flex items-start justify-between mb-6'>
+          <h2 className='text-xl font-semibold text-gray-200'>
             Are you sure you want to mark this bet as{' '}
             <span className='font-bold uppercase italic text-[#fde639]'>
               {selectedResult}
@@ -58,7 +56,7 @@ const ModalConfirmChoice = ({ onClose, selectedResult, bet }: ModalProps) => {
             type='button'
             variant='outline'
             onClick={onClose}
-            className='flex-1 h-11 rounded-lg border-border text-card-foreground hover:bg-muted'
+            className='flex-1 h-11 rounded-lg border-border text-gray-200 hover:bg-muted'
           >
             Cancel
           </Button>
@@ -73,7 +71,7 @@ const ModalConfirmChoice = ({ onClose, selectedResult, bet }: ModalProps) => {
           </Button>
         </div>
       </div>
-    </div>
+    </ModalPortal>
   );
 };
 

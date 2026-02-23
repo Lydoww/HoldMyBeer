@@ -8,9 +8,9 @@ export const getBets = async (req: Request, res: Response) => {
     const pageSize = Number(req.query.pageSize) || 10
     const skip = (page - 1) * pageSize
     const take = pageSize
+
     const creatorId = req.query.creatorId
     const excludeCreatorId = req.query.excludeCreatorId
-
     const where = creatorId ? { creatorId: Number(creatorId) } : {}
     const whereCreatorIsExclude = excludeCreatorId ? { creatorId: { not: Number(excludeCreatorId) } } : {}
 
@@ -27,7 +27,6 @@ export const getBets = async (req: Request, res: Response) => {
             creator: {
                 select: {
                     username: true,
-
                 }
             },
             votes: true,
@@ -40,7 +39,7 @@ export const getBets = async (req: Request, res: Response) => {
         }
     })
 
-    const promise2 = prisma.bet.count({ where })
+    const promise2 = prisma.bet.count({ where: { ...where, ...whereCreatorIsExclude } })
 
     const [data, totalBets] = await Promise.all([promise1, promise2])
 
@@ -51,6 +50,44 @@ export const getBets = async (req: Request, res: Response) => {
         total: totalBets,
         totalPages: Math.ceil(totalBets / pageSize)
     })
+}
+
+export const getBetsCursor = async (req: Request, res: Response) => {
+    const excludeCreatorId = req.query.excludeCreatorId
+    const whereCreatorIsExclude = excludeCreatorId ? { creatorId: { not: Number(excludeCreatorId) } } : {}
+
+    const rawCursor = req.query.cursorId
+    const cursorClause = rawCursor ? { id: Number(rawCursor) } : undefined
+
+    const communityBets = await prisma.bet.findMany({
+        take: 10,
+        cursor: cursorClause,
+        skip: cursorClause ? 1 : undefined,
+        where: {
+            ...whereCreatorIsExclude
+        },
+        orderBy: {
+            id: 'desc'
+        },
+        include: {
+            creator: {
+                select: {
+                    username: true,
+                }
+            },
+            votes: true,
+            _count: {
+                select: {
+                    votes: true
+                }
+            },
+
+        }
+    })
+
+    const lastCursorElem = communityBets[communityBets.length - 1]?.id
+
+    res.json({communityBets, lastCursorElem })
 }
 
 export const createBet = async (req: Request, res: Response) => {

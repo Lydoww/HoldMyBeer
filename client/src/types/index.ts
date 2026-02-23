@@ -8,6 +8,7 @@ export interface CreateBetPayload {
     image?: File
 }
 
+
 export interface CreateVotePayload {
     choice: Choice,
 }
@@ -41,6 +42,11 @@ export interface PaginatedBetsResponse {
     pageSize: number,
     total: number,
     totalPages: number
+}
+
+export interface CursorBetsResponse {
+    communityBets: Bet[],
+    lastCursorElem?: number
 }
 
 export interface Vote {

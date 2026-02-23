@@ -10,7 +10,13 @@ import Bets from '@/pages/bets/Bets';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+    },
+  },
+});
 
 const App = () => {
   return (

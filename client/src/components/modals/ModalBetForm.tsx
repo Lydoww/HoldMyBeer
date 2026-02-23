@@ -5,6 +5,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { X } from 'lucide-react';
+import ModalPortal from './ModalPortal';
 
 interface ModalProps {
   onClose: () => void;
@@ -40,17 +41,14 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
   };
 
   return (
-    <div
-      className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm'
-      onClick={onClose}
-    >
+    <ModalPortal onClose={onClose}>
       <div
         className='relative w-full max-w-md mx-4 rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200'
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className='flex items-center justify-between mb-6'>
-          <h2 className='text-xl font-semibold text-card-foreground'>
+        <div className='text-gray-200 flex items-center justify-between mb-6'>
+          <h2 className='text-xl font-semibold text-gray-200'>
             Create a new bet
           </h2>
           <button
@@ -66,7 +64,7 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
           <div className='space-y-2'>
             <Label
               htmlFor='title'
-              className='text-sm font-medium text-card-foreground'
+              className='text-gray-200 text-sm font-medium '
             >
               Title
             </Label>
@@ -76,7 +74,7 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
               value={bet.title}
               onChange={handleChange}
               placeholder='e.g. France wins the World Cup'
-              className='h-11 rounded-lg bg-muted border-border text-card-foreground placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
+              className=' h-11 rounded-lg bg-muted border-border text-gray-200 placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
               required
             />
           </div>
@@ -84,7 +82,7 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
           <div className='space-y-2'>
             <Label
               htmlFor='description'
-              className='text-sm font-medium text-card-foreground'
+              className='text-sm font-medium text-gray-200'
             >
               Description
             </Label>
@@ -94,13 +92,13 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
               value={bet.description}
               onChange={handleChange}
               placeholder='Add some details about this bet...'
-              className='h-11 rounded-lg bg-muted border-border text-card-foreground placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
+              className='h-11 rounded-lg bg-muted border-border text-gray-200 placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
             />
           </div>
           <div className='space-y-2'>
             <Label
               htmlFor='image'
-              className='text-sm font-medium text-card-foreground'
+              className='text-sm font-medium text-gray-200'
             >
               Upload an image
             </Label>
@@ -110,7 +108,7 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
               type='file'
               onChange={(e) => setImage(e.target.files?.[0] ?? undefined)}
               accept='image/*'
-              className='h-11 rounded-lg bg-muted border-border text-card-foreground placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
+              className='h-11 rounded-lg bg-muted border-border text-muted-foreground placeholder:text-muted-foreground focus:ring-[#527de3] focus:border-[#527de3]'
             />
           </div>
 
@@ -126,14 +124,14 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
               type='button'
               variant='outline'
               onClick={onClose}
-              className='flex-1 h-11 rounded-lg border-border text-card-foreground hover:bg-muted'
+              className='flex-1 h-11 rounded-lg border-border text-gray-200 hover:bg-muted'
             >
               Cancel
             </Button>
             <Button
               type='submit'
               disabled={mutation.isPending || !bet.title.trim()}
-              className='flex-1 h-11 rounded-lg font-semibold text-black disabled:opacity-40 transition-all hover:brightness-90'
+              className='flex-1 h-11 rounded-lg  font-semibold text-black disabled:opacity-40 transition-all hover:brightness-90'
               style={{
                 backgroundColor: '#fde639',
               }}
@@ -143,6 +141,6 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
           </div>
         </form>
       </div>
-    </div>
+    </ModalPortal>
   );
 };

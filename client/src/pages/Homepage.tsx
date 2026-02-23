@@ -64,8 +64,6 @@ const Homepage = () => {
     }
   }, [userData, updatePoint]);
 
-  const totalPages = betsData ? Math.ceil(betsData.total / pageSize) : 1;
-
   return (
     <div className='min-h-screen pb-12'>
       {/* Hero section */}
@@ -171,21 +169,20 @@ const Homepage = () => {
             </div>
           ) : (
             <>
-              <div className='grid items-start grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+              <div className='columns-1 sm:columns-2  md:columns-3 '>
                 {betsData?.data.map((bet) => (
                   <ProtectedBetCard key={bet.id} bet={bet} />
                 ))}
               </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
+              '{/* Pagination */}
+              {betsData.totalPages > 1 && (
                 <div className='flex items-center justify-center gap-2 mt-6'>
                   <Button
                     variant='outline'
                     size='sm'
                     className='rounded-lg border-border text-muted-foreground hover:bg-muted'
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => p - 1)}
+                    disabled={betsData?.page === 1}
+                    onClick={() => setPage((prev) => prev - 1)}
                   >
                     <ChevronLeft size={16} />
                   </Button>
@@ -193,14 +190,14 @@ const Homepage = () => {
                     <span className='font-semibold text-card-foreground'>
                       {page}
                     </span>{' '}
-                    / {totalPages}
+                    / {betsData.totalPages}
                   </span>
                   <Button
                     variant='outline'
                     size='sm'
                     className='rounded-lg border-border text-muted-foreground hover:bg-muted'
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
+                    disabled={betsData?.totalPages === page}
+                    onClick={() => setPage((prev) => prev + 1)}
                   >
                     <ChevronRight size={16} />
                   </Button>
