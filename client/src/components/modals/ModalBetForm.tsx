@@ -6,6 +6,7 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { X } from 'lucide-react';
 import ModalPortal from './ModalPortal';
+import axios from 'axios';
 
 interface ModalProps {
   onClose: () => void;
@@ -18,6 +19,7 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
     description: '',
   });
   const [image, setImage] = useState<File | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: createBet,
@@ -37,7 +39,16 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bet.title.trim()) return;
-    mutation.mutate({ ...bet, image });
+    mutation.mutate(
+      { ...bet, image },
+      {
+        onError: (err) => {
+          if (axios.isAxiosError(err)) {
+            setError(err.response?.data.message);
+          }
+        },
+      },
+    );
   };
 
   return (
@@ -112,9 +123,9 @@ export const ModalBetForm = ({ onClose }: ModalProps) => {
             />
           </div>
 
-          {mutation.isError && (
+          {error && (
             <p className='text-sm text-red-400 bg-red-950/40 border border-red-900/50 rounded-lg p-3'>
-              Something went wrong. Please try again.
+              {error}
             </p>
           )}
 
