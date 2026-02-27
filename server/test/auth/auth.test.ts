@@ -1,12 +1,12 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import { beforeAll, describe, expect, it } from 'vitest'
-import { cleanerFunction } from '../helpers';
+import { cleanerAuthFunction } from '../helpers';
 
 
 describe('Test des routes /auth', () => {
     beforeAll(async () => {
-        await cleanerFunction()
+        await cleanerAuthFunction()
     })
     describe('POST /register', () => {
         it('On créer un utilisateur', async () => {

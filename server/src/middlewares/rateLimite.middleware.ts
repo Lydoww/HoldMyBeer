@@ -6,6 +6,7 @@ export const registerLimit = rateLimit({
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: 'Too many register requests, wait a bit.',
+    skip: () => process.env.NODE_ENV === 'test'
 })
 
 export const loginLimit = rateLimit({
@@ -14,7 +15,8 @@ export const loginLimit = rateLimit({
     message: 'Too many login requests, wait a bit.',
     standardHeaders: 'draft-7',
     legacyHeaders: false,
-    skipSuccessfulRequests: true
+    skipSuccessfulRequests: true,
+    skip: () => process.env.NODE_ENV === 'test'
 })
 
 export const betCreationLimit = rateLimit({
@@ -23,4 +25,5 @@ export const betCreationLimit = rateLimit({
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: 'Too many bet creation requests, wait a bit.',
+    skip: () => process.env.NODE_ENV === 'test'
 })

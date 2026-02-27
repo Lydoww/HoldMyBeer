@@ -32,8 +32,63 @@ export const createVote = async (betId: number, token: string, choice: string) =
 }
 
 
-export const cleanerFunction = async () => {
-    await prisma.vote.deleteMany()
-    await prisma.bet.deleteMany()
-    await prisma.user.deleteMany()
+export const cleanerAuthFunction = async () => {
+    await prisma.user.deleteMany({
+        where: {
+            email: 'authTest@test.com'
+        }
+    })
+}
+
+export const cleanerBetUser = async () => {
+    await prisma.bet.deleteMany({
+        where: {
+            creator: {
+                email: {
+                    in: ['betTest@alex.com',
+                        'betTest2@alex.com',
+                        'creatorTest@alex.com']
+                }
+            }
+        }
+    })
+    await prisma.user.deleteMany({
+        where: {
+            email: {
+                in: ['betTest@alex.com',
+                    'betTest2@alex.com',
+                    'creatorTest@alex.com']
+            }
+
+        }
+    })
+}
+
+export const cleanerVoteUser = async () => {
+    await prisma.vote.deleteMany({
+        where: {
+            user: {
+                email: {
+                    in: ['voteTest@alex.com', 'voteTest2@alex.com']
+                }
+            }
+        }
+    })
+    await prisma.bet.deleteMany({
+        where: {
+            creator: {
+                email: {
+                    in: ['voteTest@alex.com', 'voteTest2@alex.com']
+                }
+            }
+        }
+    })
+    await prisma.user.deleteMany({
+        where: {
+            email: {
+                in: ['voteTest@alex.com', 'voteTest2@alex.com']
+            }
+
+        }
+    })
 }
