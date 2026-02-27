@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import { afterAll, beforeAll, describe, it } from 'vitest'
-import { authTestUser, cleanerFunction } from '../helpers';
+import { authTestUser, cleanerVoteUser } from '../helpers';
 
 describe('Test des routes /votes', () => {
     let token1 = ''
@@ -9,7 +9,7 @@ describe('Test des routes /votes', () => {
     let voteId = 0
     let betId = 0
     beforeAll(async () => {
-        await cleanerFunction()
+        await cleanerVoteUser()
         token1 = await authTestUser('voteTest@alex.com', 'alex', 'password')
         token2 = await authTestUser('voteTest2@alex.com', 'hugo', '123456')
 
@@ -87,6 +87,6 @@ describe('Test des routes /votes', () => {
         })
     })
     afterAll(async () => {
-        await cleanerFunction()
+        await cleanerVoteUser()
     })
 })

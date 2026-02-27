@@ -3,9 +3,7 @@ import axios from 'axios'
 
 const apiClient = axios.create({
     baseURL: 'http://localhost:8000/api',
-    headers: {
-        'Content-Type': 'application/json'
-    }
+
 })
 
 apiClient.interceptors.request.use((config) => {
@@ -26,7 +24,7 @@ apiClient.interceptors.response.use((response) => response,
         if (error.response?.status === 401 && useAuth.getState().token) {
             useAuth.getState().logout()
             window.location.href = '/login'
-        } 
+        }
         return Promise.reject(error)
     })
 

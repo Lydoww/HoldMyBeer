@@ -1,7 +1,7 @@
 import { getBets } from '@/api/bets';
 import { getVotes } from '@/api/votes';
 import ProtectedBetCard from '@/components/bet/ProtectedBetCard';
-import { SkeletonBetItem } from '@/components/layout/SkeletonBetItem';
+import { SkeletonBetItem } from '@/components/skeletons/SkeletonBetItem';
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import VoteCard from '@/components/VoteCard';
@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { me } from '@/api/auth';
 import { ModalBetForm } from '@/components/modals/ModalBetForm';
+import Leaderboard from '@/components/Leaderboard';
 
 const Homepage = () => {
   const user = useAuth((state) => state.user);
@@ -44,7 +45,7 @@ const Homepage = () => {
     isPending: betsLoading,
     error: betsError,
   } = useQuery({
-    queryKey: ['bets', page, pageSize, user?.id],
+    queryKey: ['bets', 'homepage', page, pageSize, user?.id],
     queryFn: () => getBets(page, pageSize, user?.id),
   });
 
@@ -53,7 +54,7 @@ const Homepage = () => {
     isPending,
     error,
   } = useQuery({
-    queryKey: ['user'],
+    queryKey: ['me'],
     queryFn: () => me(),
   });
 
@@ -62,8 +63,6 @@ const Homepage = () => {
       updatePoint(userData.points);
     }
   }, [userData, updatePoint]);
-
-  const totalPages = betsData ? Math.ceil(betsData.total / pageSize) : 1;
 
   return (
     <div className='min-h-screen pb-12'>
@@ -118,6 +117,18 @@ const Homepage = () => {
         </div>
       </div>
 
+      {/* Leaderboard section */}
+      <section className='mt-8 max-w-7xl mx-auto px-6'>
+        <div className='flex items-center gap-2 mb-5'>
+          <Trophy size={20} className='text-[#fde639]' />
+          <h2 className='text-lg font-bold text-card-foreground'>
+            Leaderboard
+          </h2>
+        </div>
+
+        <Leaderboard />
+      </section>
+
       <div className='max-w-7xl mx-auto px-6'>
         {/* Bets section */}
         <section className='mt-8'>
@@ -132,7 +143,7 @@ const Homepage = () => {
               </span>
             )}
             <Button
-              variant={'custom'}
+              variant={'outline'}
               onClick={toggleModal}
               size='sm'
               className='hidden md:flex items-center gap-1.5'
@@ -158,21 +169,20 @@ const Homepage = () => {
             </div>
           ) : (
             <>
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
+              <div className='columns-1 sm:columns-2  md:columns-3 '>
                 {betsData?.data.map((bet) => (
                   <ProtectedBetCard key={bet.id} bet={bet} />
                 ))}
               </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
+              '{/* Pagination */}
+              {betsData.totalPages > 1 && (
                 <div className='flex items-center justify-center gap-2 mt-6'>
                   <Button
                     variant='outline'
                     size='sm'
                     className='rounded-lg border-border text-muted-foreground hover:bg-muted'
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => p - 1)}
+                    disabled={betsData?.page === 1}
+                    onClick={() => setPage((prev) => prev - 1)}
                   >
                     <ChevronLeft size={16} />
                   </Button>
@@ -180,14 +190,14 @@ const Homepage = () => {
                     <span className='font-semibold text-card-foreground'>
                       {page}
                     </span>{' '}
-                    / {totalPages}
+                    / {betsData.totalPages}
                   </span>
                   <Button
                     variant='outline'
                     size='sm'
                     className='rounded-lg border-border text-muted-foreground hover:bg-muted'
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
+                    disabled={betsData?.totalPages === page}
+                    onClick={() => setPage((prev) => prev + 1)}
                   >
                     <ChevronRight size={16} />
                   </Button>

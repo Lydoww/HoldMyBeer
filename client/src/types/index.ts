@@ -5,7 +5,9 @@ export type Choice = 'success' | 'fail'
 export interface CreateBetPayload {
     title: string,
     description: string
+    image?: File
 }
+
 
 export interface CreateVotePayload {
     choice: Choice,
@@ -29,6 +31,7 @@ export interface Bet {
     creatorId: number
     creator: { username: string }
     _count: { votes: number }
+    imageURL?: string
     votes: Vote[]
     createdAt: string
 }
@@ -41,10 +44,22 @@ export interface PaginatedBetsResponse {
     totalPages: number
 }
 
+export interface CursorBetsResponse {
+    communityBets: Bet[],
+    lastCursorElem?: number
+}
+
 export interface Vote {
     id: number,
     choice: Choice,
     userId: number,
     bet: Bet
     betId: number
+}
+
+export interface User {
+    id: number
+    email: string
+    username: string
+    points: number
 }

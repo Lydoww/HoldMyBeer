@@ -10,7 +10,7 @@ export const useVoteMutations = () => {
                 createVote(betId, data),
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['votes'] });
-                queryClient.invalidateQueries({ queryKey: ['bets'] });
+                queryClient.invalidateQueries({ queryKey: ['bets', 'community'] });
             },
         })
 
@@ -19,7 +19,7 @@ export const useVoteMutations = () => {
             mutationFn: deleteVote,
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['votes'] });
-                queryClient.invalidateQueries({ queryKey: ['bets'] });
+                queryClient.invalidateQueries({ queryKey: ['bets', 'community'] });
             },
         })
 
@@ -29,7 +29,7 @@ export const useVoteMutations = () => {
                 updateVote(id, data),
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['votes'] });
-                queryClient.invalidateQueries({ queryKey: ['bets'] });
+                queryClient.invalidateQueries({ queryKey: ['bets', 'community'] });
             },
         })
 

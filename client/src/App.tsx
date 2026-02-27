@@ -1,35 +1,40 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
-import Homepage from './pages/Homepage';
+import Homepage from '@/pages/Homepage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import PrivateRoutes from './components/routes/PrivateRoutes';
-import React, { Suspense } from 'react';
+import PrivateRoutes from '@/components/routes/PrivateRoutes';
+
 import Layout from '@/components/layout/Layout';
-import PublicRoutes from './components/routes/PublicRoutes';
+import PublicRoutes from '@/components/routes/PublicRoutes';
+import Bet from '@/pages/bets/Bet';
+import Bets from '@/pages/bets/Bets';
+import Login from '@/pages/auth/Login';
+import Register from '@/pages/auth/Register';
 
-const Login = React.lazy(() => import('@/pages/auth/Login'));
-const Register = React.lazy(() => import('@/pages/auth/Register'));
-const Bets = React.lazy(() => import('@/pages/bets/Bets'));
-
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+    },
+  },
+});
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route element={<PrivateRoutes />}>
-                <Route element={<Homepage />} path='/' />
-                <Route element={<Bets />} path='/bets' />
-              </Route>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route element={<PrivateRoutes />}>
+              <Route element={<Homepage />} path='/' />
+              <Route element={<Bets />} path='/bets' />
+              <Route element={<Bet />} path='/bets/:id' />
             </Route>
-            <Route element={<PublicRoutes />}>
-              <Route element={<Login />} path='/login' />
-              <Route element={<Register />} path='/register' />
-            </Route>
-          </Routes>
-        </Suspense>
+          </Route>
+          <Route element={<PublicRoutes />}>
+            <Route element={<Login />} path='/login' />
+            <Route element={<Register />} path='/register' />
+          </Route>
+        </Routes>
       </BrowserRouter>
     </QueryClientProvider>
   );

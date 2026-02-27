@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import app from '../../src/app';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { authTestUser, cleanerFunction, createBet, createVote } from '../helpers';
+import { authTestUser, cleanerBetUser, createBet, createVote } from '../helpers';
 import prisma from '../../src/lib/db';
 
 describe('Test des routes /bets', () => {
@@ -10,7 +10,7 @@ describe('Test des routes /bets', () => {
     let token3 = ''
     let betId = 0
     beforeAll(async () => {
-        await cleanerFunction()
+        await cleanerBetUser()
         token1 = await authTestUser('betTest@alex.com', 'alex', 'password')
         token2 = await authTestUser('betTest2@alex.com', 'hugo', '123456')
         token3 = await authTestUser('creatorTest@alex.com', 'creator', 'password78')
@@ -131,7 +131,7 @@ describe('Test des routes /bets', () => {
     })
 
     afterAll(async () => {
-        await cleanerFunction()
+        await cleanerBetUser()
     })
 })
 
